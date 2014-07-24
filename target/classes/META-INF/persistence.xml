@@ -1,63 +1,21 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jee="http://www.springframework.org/schema/jee"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
- http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
- http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
- http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
-
-	<bean id="propertyConfigurer"
-		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="properties">
-			<bean class="java.util.Properties">
-				<constructor-arg>
-					<map>
-						<entry key="database.username" value="root">
-						</entry>
-						<entry key="database.password" value="">
-						</entry>
-						<entry key="database.url" value="jdbc:mysql://localhost/altair">
-						</entry>
-						<entry key="database.drivername" value="com.mysql.jdbc.Driver">
-						</entry>
-					</map>
-				</constructor-arg>
-			</bean>
-		</property>
-	</bean>
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"> 
 
 
-	<context:load-time-weaver />
+<persistence-unit name="defaultPersistenceUnit"
+	transaction-type="RESOURCE_LOCAL">
+	<provider>org.hibernate.ejb.HibernatePersistence</provider>
+	<properties>
+		<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+		<property name="hibernate.connection.url" value="jdbc:mysql://localhost/altair" />
+		<property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+		<property name="hibernate.connection.username" value="root" />
+		<property name="hibernate.connection.password" value="" />
+		<property name="hibernate.hbm2ddl.auto" value="create" />
+	</properties>
+</persistence-unit>
+</persistence>
 
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
-		<property name="driverClassName" value="${database.drivername}" />
-		<property name="url" value="${database.url}" />
-		<property name="username" value="${database.username}" />
-		<property name="password" value="${database.password}" />
-	</bean>
-
-	<bean id="em"
-		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
-		<property name="persistenceUnitName" value="billing" />
-		<property name="dataSource" ref="dataSource" />
-		<property name="loadTimeWeaver" ref="loadTimeWeaver" />
-		<property name="jpaProperties">
-			<props>
-				<prop key="eclipselink.cache.shared.default">false</prop>
-				<prop key="eclipselink.ddl-generation">create-tables</prop>
-				<prop key="eclipselink.ddl-generation.output-mode">both</prop>
-				<prop key="eclipselink.logging.level.sql">FINE</prop>
-				<prop key="eclipselink.logging.level">FINE</prop>
-				<prop key="eclipselink.logging.parameters">true</prop>
-			</props>
-		</property>
-	</bean>
-
-	<tx:annotation-driven transaction-manager="txManager" />
-	<bean id="txManager" class="org.springframework.orm.jpa.JpaTransactionManager">
-		<property name="entityManagerFactory" ref="em" />
-	</bean>
-</beans>
 

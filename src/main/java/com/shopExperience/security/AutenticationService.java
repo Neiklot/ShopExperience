@@ -18,39 +18,44 @@ import com.shopExperience.entities.User;
 
 public class AutenticationService implements UserDetailsService {
 
-	
 	private EntityManager entityManager;
-	
-	 @PersistenceContext
-	    public void setEntityManager(EntityManager em) {
-	        this.entityManager = em;
-	    }
-	 
-	 public UserDetails loadUserByUsername(String userName)
-				throws UsernameNotFoundException, DataAccessException {
 
-		    List<User> users=entityManager.createNamedQuery("User.findAll",User.class).getResultList();
-		    User user=null;
-		    
-		    for(User userSearch:users){
-		    	if(userSearch.getUserName().equals(userName)){
-		    		user=userSearch;
-		    	}
-		    }
-		    if(user==null)
-		      throw new UsernameNotFoundException("user not found");
-		    
-		    String username = user.getUserName();
-			String password = user.getPassword();
+	@PersistenceContext
+	public void setEntityManager(EntityManager em) {
+		this.entityManager = em;
+	}
 
-			Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+	public UserDetails loadUserByUsername(String userName)
+			throws UsernameNotFoundException, DataAccessException {
 
-			 org.springframework.security.core.userdetails.User userValidated = 
-					 new org.springframework.security.core.userdetails.User(username, password, true,
-					true, true, true,
-					new GrantedAuthority[]{ new GrantedAuthorityImpl("ROLE_USER") });
-			 
-			 
-			return userValidated;
+		List<User> users = entityManager.createNamedQuery("User.findAll",
+				User.class).getResultList();
+		User user = null;
+
+		for (User userSearch : users) {
+			if (userSearch.getUserName().equals(userName)) {
+				user = userSearch;
+			}
 		}
+		if (user == null)
+			throw new UsernameNotFoundException("user not found");
+
+		String username = user.getUserName();
+		String password = user.getPassword();
+
+		@SuppressWarnings("unused")
+		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+
+		@SuppressWarnings("deprecation")
+		org.springframework.security.core.userdetails.User userValidated = new org.springframework.security.core.userdetails.User(
+				username,
+				password,
+				true,
+				true,
+				true,
+				true,
+				new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER") });
+
+		return userValidated;
+	}
 }
