@@ -38,27 +38,29 @@
                 caption: "Usuarios con productos",
                 onSelectRow: function(){ 
     	            var selr = jQuery('#dataTable').jqGrid('getGridParam','selrow'); 
-    	            if(selr) alert(selr); 
+    	            if(selr) popupwindow(selr); 
     	            else alert("No selected row"); 
     	            return false; 
     	        }
             });
         }
         
-		function getSelected(){
-	        jQuery("#getselected").click(function(){ 
-	            var selr = jQuery('#dataTable').jqGrid('getGridParam','selrow'); 
-	            if(selr) alert(selr); 
-	            else alert("No selected row"); 
-	            return false; 
-	        }); 
-		}
+        
+        function popupwindow(selr) {
+        	var url="http://localhost:8080/shopExperience/index";
+        	var title=selr;
+        	var w=250;
+        	var h=250;
+        	  var left = (screen.width/2)-(w/2);
+        	  var top = (screen.height/2)-(h/2);
+        	  return window.open(url, selr, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+        	} 
     </script>
 
 </head>
 <body>
 	<td ><h1><a href="<c:url value="/j_spring_security_logout" />"> Logout</a></h1></td>
-	<td><button id="getselected">Get Selected Rows</button></td>
+<!-- 	<td><button id="getselected">Get Selected Rows</button></td> -->
 	<td ><a href="<c:url value="/register" />"> New User </a></h1></td>
   <div class="centreDiv"  style="margin-left:25%" >
 
