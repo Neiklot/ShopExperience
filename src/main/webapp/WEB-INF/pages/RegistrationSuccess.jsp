@@ -27,6 +27,7 @@
       		<tr>
                     <td>Password:</td>
                     <td>${userForm.password}</td>
+                    	<td ><a href="<c:url value="/index" />"> Return to list </a></h1></td>
                 </tr>
         </table>
     </div>

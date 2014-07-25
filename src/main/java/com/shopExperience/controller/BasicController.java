@@ -94,7 +94,7 @@ public class BasicController {
 		try{
 		user.setProducts(getProducts());
 		entityManager.persist(user);
-
+		entityManager.flush();
 		}catch(Exception e){
 			System.out.println(e.toString());
 		}
