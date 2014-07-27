@@ -17,10 +17,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Product;
-import com.shopExperience.entities.User;
+import com.shopExperience.entities.Client;
 import com.shopExperience.pagination.GridUtils;
 import com.shopExperience.pagination.JqGridData;
-import com.shopExperience.pagination.ModelTableUser;
+import com.shopExperience.pagination.ModelTableClient;
 
 @Controller
 @RequestMapping("/")
@@ -28,7 +28,7 @@ public class BasicController {
 
 	private EntityManager entityManager;
 
-	List<ModelTableUser> usersModel;
+	List<ModelTableClient> clientsModel;
 
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
@@ -36,34 +36,34 @@ public class BasicController {
 	}
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String listUsers(ModelMap model) {
+	public String listClients(ModelMap model) {
 
-		usersModel = new ArrayList<ModelTableUser>();
+		clientsModel = new ArrayList<ModelTableClient>();
 
-		List<User> users = new ArrayList<User>();
+		List<Client> clients = new ArrayList<Client>();
 
-		TypedQuery<User> query = entityManager.createNamedQuery("User.findAll",
-				User.class);
+		TypedQuery<Client> query = entityManager.createNamedQuery("Client.findAll",
+				Client.class);
 		// .setMaxResults(pageSize).setFirstResult(currPosition).list();
-		users = query.getResultList();
+		clients = query.getResultList();
 		int numProducts = 0, numCard = 0;
 
-		for (User user : users) {
-			ModelTableUser mTableUser = new ModelTableUser();
-			mTableUser.setUserId(user.getId());
-			mTableUser.setUserName(user.getUserName());
-			numProducts = user.getProducts().size();
-			mTableUser.setCard("A");
-			if (user.getCards().size() > 0) {
-				Card card = user.getCards().get(0);
-				mTableUser.setCard("" + card.getId());
+		for (Client client : clients) {
+			ModelTableClient mTableClient = new ModelTableClient();
+			mTableClient.setClientId(client.getId());
+			mTableClient.setClientName(client.getClientName());
+			numProducts = client.getProducts().size();
+			mTableClient.setCard("A");
+			if (client.getCards().size() > 0) {
+				Card card = client.getCards().get(0);
+				mTableClient.setCard("" + card.getId());
 			}
 			if (numProducts > 0) {
-				mTableUser.setTotalProducts(numProducts);
-				mTableUser.setLastProduct(user.getProducts()
+				mTableClient.setTotalProducts(numProducts);
+				mTableClient.setLastProduct(client.getProducts()
 						.get(numProducts - 1).getName());
 			}
-			usersModel.add(mTableUser);
+			clientsModel.add(mTableClient);
 		}
 		return "index";
 	}
@@ -88,12 +88,12 @@ public class BasicController {
 
 	}
 
-	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
+	@RequestMapping(value = "/addClient", method = RequestMethod.GET)
 	@Transactional
-	public String addUSer(User user) {
+	public String addClient(Client client) {
 		try{
-		user.setProducts(getProducts());
-		entityManager.persist(user);
+		client.setProducts(getProducts());
+		entityManager.persist(client);
 		entityManager.flush();
 		}catch(Exception e){
 			System.out.println(e.toString());
@@ -107,22 +107,22 @@ public class BasicController {
 		return query.getResultList();
 	}
 
-	@RequestMapping(value = "getUsers", method = RequestMethod.GET)
+	@RequestMapping(value = "getClients", method = RequestMethod.GET)
 	@ResponseBody
-	public JqGridData<ModelTableUser> getUsers(@RequestParam("page") int page,
+	public JqGridData<ModelTableClient> getClients(@RequestParam("page") int page,
 			@RequestParam("rows") int rows,
 			@RequestParam("sidx") String sortColumnId,
 			@RequestParam("sord") String sortDirection) {
 
-		int totalNumberOfPages = GridUtils.getTotalNumberOfPages(usersModel,
+		int totalNumberOfPages = GridUtils.getTotalNumberOfPages(clientsModel,
 				rows);
-		int currentPageNumber = GridUtils.getCurrentPageNumber(usersModel,
+		int currentPageNumber = GridUtils.getCurrentPageNumber(clientsModel,
 				page, rows);
-		int totalNumberOfRecords = usersModel.size();
-		List<ModelTableUser> pageData = GridUtils.getDataForPage(usersModel,
+		int totalNumberOfRecords = clientsModel.size();
+		List<ModelTableClient> pageData = GridUtils.getDataForPage(clientsModel,
 				page, rows);
 
-		JqGridData<ModelTableUser> gridData = new JqGridData<ModelTableUser>(
+		JqGridData<ModelTableClient> gridData = new JqGridData<ModelTableClient>(
 				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
 				pageData);
 

@@ -2,7 +2,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>ShopExperience Usuarios y Productos</title>
+    <title>ShopExperience Clientes y Productos</title>
     
 
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js" type="text/javascript"></script>
@@ -19,13 +19,13 @@
             
         function setupGrid(){
             jQuery("#dataTable").jqGrid({
-                url: "/shopExperience/getUsers",
+                url: "/shopExperience/getClients",
                 datatype: "json",
                 jsonReader: {repeatitems: false, id: "ref"},
-                colNames:['Id Usuario','Usuario','Total Productos','Ultimo Producto','Tarjeta Asignada'],
+                colNames:['Id Cliente','Cliente','Total Productos','Ultimo Producto','Tarjeta Asignada'],
                 colModel:[
-                    {name:'userId',index:'userId', width:100},
-                    {name:'userName',index:'userName', width:250},
+                    {name:'clientId',index:'clientId', width:100},
+                    {name:'clientName',index:'clientName', width:250},
                     {name:'totalProducts',index:'totalProducts', width:100},
                     {name:'lastProduct',index:'lastProduct', width:250},
                     {name:'card',index:'card', width:250}
@@ -35,7 +35,7 @@
                 height:165,
                 pager: "#pagingDiv",
                 viewrecords: true,
-                caption: "Usuarios con productos",
+                caption: "Clientes con productos",
                 onSelectRow: function(){ 
     	            var selr = jQuery('#dataTable').jqGrid('getGridParam','selrow'); 
     	            if(selr) popupwindow(selr); 
@@ -61,7 +61,7 @@
 <body>
 	<td ><h1><a href="<c:url value="/j_spring_security_logout" />"> Logout</a></h1></td>
 <!-- 	<td><button id="getselected">Get Selected Rows</button></td> -->
-	<td ><a href="<c:url value="/register" />"> New User </a></h1></td>
+	<td ><a href="<c:url value="/register" />"> New Client </a></h1></td>
   <div class="centreDiv"  style="margin-left:25%" >
 
   

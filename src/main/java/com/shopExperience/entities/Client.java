@@ -19,22 +19,22 @@ import javax.persistence.OneToMany;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-@Entity(name = "User")
+@Entity(name = "Client")
 @NamedQueries({
-@NamedQuery(name="User.findAll",query="SELECT u FROM User u")})
-public class User{
+@NamedQuery(name="Client.findAll",query="SELECT u FROM Client u")})
+public class Client{
 	
     @Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @Column(name="USER_NAME",nullable=false, length = 50)
-    private String userName;
+    @Column(name="Client_NAME",nullable=false, length = 50)
+    private String ClientName;
 
     @Column(name="PASSWORD",nullable=false, length = 50)
     private String password;
     
-    @ManyToMany(mappedBy="users",fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
+    @ManyToMany(mappedBy="clients",fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	 private List<Product> products;
     
     @ManyToOne 
@@ -43,7 +43,7 @@ public class User{
  	private Association association;
     
     @OneToMany 
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="client_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
     private List<Card> cards;
 
@@ -55,12 +55,12 @@ public class User{
         this.id = id;
     }
 
-	public String getUserName() {
-		return userName;
+	public String getClientName() {
+		return ClientName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setClientName(String ClientName) {
+		this.ClientName = ClientName;
 	}
 
 	public String getPassword() {

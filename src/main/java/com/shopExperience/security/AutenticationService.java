@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.shopExperience.entities.User;
+import com.shopExperience.entities.Client;
 
 public class AutenticationService implements UserDetailsService {
 
@@ -25,30 +25,30 @@ public class AutenticationService implements UserDetailsService {
 		this.entityManager = em;
 	}
 
-	public UserDetails loadUserByUsername(String userName)
+	public UserDetails loadUserByUsername(String clientName)
 			throws UsernameNotFoundException, DataAccessException {
 
-		List<User> users = entityManager.createNamedQuery("User.findAll",
-				User.class).getResultList();
-		User user = null;
+		List<Client> clients = entityManager.createNamedQuery("Client.findAll",
+				Client.class).getResultList();
+		Client client = null;
 
-		for (User userSearch : users) {
-			if (userSearch.getUserName().equals(userName)) {
-				user = userSearch;
+		for (Client clientSearch : clients) {
+			if (clientSearch.getClientName().equals(clientName)) {
+				client = clientSearch;
 			}
 		}
-		if (user == null)
-			throw new UsernameNotFoundException("user not found");
+		if (client == null)
+			throw new UsernameNotFoundException("Client not found");
 
-		String username = user.getUserName();
-		String password = user.getPassword();
+		String clientname = client.getClientName();
+		String password = client.getPassword();
 
 		@SuppressWarnings("unused")
 		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
 
 		@SuppressWarnings("deprecation")
-		org.springframework.security.core.userdetails.User userValidated = new org.springframework.security.core.userdetails.User(
-				username,
+		org.springframework.security.core.userdetails.User clientValidated = new org.springframework.security.core.userdetails.User(
+				clientname,
 				password,
 				true,
 				true,
@@ -56,6 +56,6 @@ public class AutenticationService implements UserDetailsService {
 				true,
 				new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER") });
 
-		return userValidated;
+		return clientValidated;
 	}
 }

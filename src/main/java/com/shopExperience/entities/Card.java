@@ -23,9 +23,9 @@ public class Card {
 	private int id;
 
 	@ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="client_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
-	private User user;
+	private Client client;
 
 	public int getId() {
 		return id;
@@ -35,13 +35,13 @@ public class Card {
 		this.id = id;
 	}
 
-	@Column(name = "user")
-	public User getUser() {
-		return user;
+	@Column(name = "client")
+	public Client getClient() {
+		return client;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setClient(Client client) {
+		this.client = client;
 	}
 
 }

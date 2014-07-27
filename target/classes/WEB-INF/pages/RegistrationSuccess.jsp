@@ -21,12 +21,13 @@
                 </td>
             </tr>
             <tr>
-                <td>User Name:</td>
-                <td>${userForm.userName}</td>
+                <td>Client Name:</td>
+                <td>${clientForm.clientName}</td>
             </tr>
       		<tr>
                     <td>Password:</td>
-                    <td>${userForm.password}</td>
+                    <td>${clientForm.password}</td>
+                    	<td ><a href="<c:url value="/index" />"> Return to list </a></h1></td>
                 </tr>
         </table>
     </div>

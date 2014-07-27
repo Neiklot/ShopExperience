@@ -37,7 +37,7 @@ public class Product {
 	private Date reg_date;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<User> users;
+	private List<Client> clients;
 
 	public int getId() {
 		return id;
@@ -71,12 +71,12 @@ public class Product {
 		this.reg_date = reg_date;
 	}
 
-	public List<User> getUser() {
-		return users;
+	public List<Client> getClient() {
+		return clients;
 	}
 
-	public void setUser(List<User> users) {
-		this.users = users;
+	public void setClient(List<Client> clients) {
+		this.clients = clients;
 	}
 
 }
