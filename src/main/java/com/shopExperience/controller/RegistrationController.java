@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.shopExperience.entities.Client;
  
 @Controller
-@RequestMapping(value = "/register")
+@RequestMapping(value = "/registerClient")
 public class RegistrationController {
 	
 	@Autowired

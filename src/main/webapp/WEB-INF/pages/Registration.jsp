@@ -14,7 +14,7 @@
 <body>
 	<td ><h1><a href="<c:url value="/j_spring_security_logout" />"> Logout</a></h1></td>
   <div class="centreDiv"  style="margin-left:25%" >
-        <form:form action="register" method="post" commandName="clientForm">
+        <form:form action="registerClient" method="post" commandName="clientForm">
             <table border="0">
                 <tr>
                     <td colspan="2" align="center"><h2>Spring MVC Form Demo - Registration</h2></td>

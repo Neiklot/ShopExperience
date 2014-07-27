@@ -16,11 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shopExperience.entities.Card;
-import com.shopExperience.entities.Product;
 import com.shopExperience.entities.Client;
+import com.shopExperience.entities.Product;
+import com.shopExperience.entities.Shop;
+import com.shopExperience.entities.User;
 import com.shopExperience.pagination.GridUtils;
 import com.shopExperience.pagination.JqGridData;
 import com.shopExperience.pagination.ModelTableClient;
+import com.shopExperience.pagination.ModelTableShop;
 
 @Controller
 @RequestMapping("/")
@@ -29,6 +32,7 @@ public class BasicController {
 	private EntityManager entityManager;
 
 	List<ModelTableClient> clientsModel;
+	List<ModelTableShop> shopsModel;
 
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
@@ -39,15 +43,21 @@ public class BasicController {
 	public String listClients(ModelMap model) {
 
 		clientsModel = new ArrayList<ModelTableClient>();
+		shopsModel = new ArrayList<ModelTableShop>();
 
 		List<Client> clients = new ArrayList<Client>();
+		List<Shop> shops = new ArrayList<Shop>();
 
-		TypedQuery<Client> query = entityManager.createNamedQuery("Client.findAll",
-				Client.class);
-		// .setMaxResults(pageSize).setFirstResult(currPosition).list();
+		TypedQuery<Client> query = entityManager.createNamedQuery(
+				"Client.findAll", Client.class);
 		clients = query.getResultList();
+
+		TypedQuery<Shop> queryShops = entityManager.createNamedQuery(
+				"Shop.findAll", Shop.class);
+		shops = queryShops.getResultList();
 		int numProducts = 0, numCard = 0;
 
+		// Table clients
 		for (Client client : clients) {
 			ModelTableClient mTableClient = new ModelTableClient();
 			mTableClient.setClientId(client.getId());
@@ -64,6 +74,13 @@ public class BasicController {
 						.get(numProducts - 1).getName());
 			}
 			clientsModel.add(mTableClient);
+		}
+		// Table shops
+		for (Shop shop : shops) {
+			ModelTableShop mTableShop = new ModelTableShop();
+			mTableShop.setShopId(shop.getId());
+			mTableShop.setShopName(shop.getName());
+			shopsModel.add(mTableShop);
 		}
 		return "index";
 	}
@@ -91,26 +108,38 @@ public class BasicController {
 	@RequestMapping(value = "/addClient", method = RequestMethod.GET)
 	@Transactional
 	public String addClient(Client client) {
-		try{
-		client.setProducts(getProducts());
-		entityManager.persist(client);
-		entityManager.flush();
-		}catch(Exception e){
+		try {
+			client.setProducts(getProducts());
+			entityManager.persist(client);
+			entityManager.flush();
+		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 		return "RegistrationSuccess";
 	}
-	
-	public List<Product> getProducts(){
-		TypedQuery<Product> query = entityManager.createNamedQuery("Product.findAll",
-				Product.class);
+
+	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
+	@Transactional
+	public String addUser(User user) {
+		try {
+			entityManager.persist(user);
+			entityManager.flush();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return "RegistrationSuccess";
+	}
+
+	public List<Product> getProducts() {
+		TypedQuery<Product> query = entityManager.createNamedQuery(
+				"Product.findAll", Product.class);
 		return query.getResultList();
 	}
 
 	@RequestMapping(value = "getClients", method = RequestMethod.GET)
 	@ResponseBody
-	public JqGridData<ModelTableClient> getClients(@RequestParam("page") int page,
-			@RequestParam("rows") int rows,
+	public JqGridData<ModelTableClient> getClients(
+			@RequestParam("page") int page, @RequestParam("rows") int rows,
 			@RequestParam("sidx") String sortColumnId,
 			@RequestParam("sord") String sortDirection) {
 
@@ -119,10 +148,32 @@ public class BasicController {
 		int currentPageNumber = GridUtils.getCurrentPageNumber(clientsModel,
 				page, rows);
 		int totalNumberOfRecords = clientsModel.size();
-		List<ModelTableClient> pageData = GridUtils.getDataForPage(clientsModel,
-				page, rows);
+		List<ModelTableClient> pageData = GridUtils.getDataForPage(
+				clientsModel, page, rows);
 
 		JqGridData<ModelTableClient> gridData = new JqGridData<ModelTableClient>(
+				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
+				pageData);
+
+		return gridData;
+	}
+	
+	@RequestMapping(value = "getShops", method = RequestMethod.GET)
+	@ResponseBody
+	public JqGridData<ModelTableShop> getShops(
+			@RequestParam("page") int page, @RequestParam("rows") int rows,
+			@RequestParam("sidx") String sortColumnId,
+			@RequestParam("sord") String sortDirection) {
+
+		int totalNumberOfPages = GridUtils.getTotalNumberOfPages(shopsModel,
+				rows);
+		int currentPageNumber = GridUtils.getCurrentPageNumber(shopsModel,
+				page, rows);
+		int totalNumberOfRecords = shopsModel.size();
+		List<ModelTableShop> pageData = GridUtils.getDataForPage(
+				shopsModel, page, rows);
+
+		JqGridData<ModelTableShop> gridData = new JqGridData<ModelTableShop>(
 				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
 				pageData);
 
