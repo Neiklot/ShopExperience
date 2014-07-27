@@ -8,7 +8,11 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Card")
 public class Card {
@@ -18,8 +22,9 @@ public class Card {
 	@SequenceGenerator(sequenceName = "SEQ_ID", name = "SEQ_ID", initialValue = 0, allocationSize = 1)
 	private int id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "USER_ID", nullable = false)
+	@ManyToOne
+    @JoinColumn(name="user_id")
+    @LazyCollection(LazyCollectionOption.FALSE) 
 	private User user;
 
 	public int getId() {

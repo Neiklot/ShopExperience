@@ -22,7 +22,6 @@ import javax.persistence.TemporalType;
 @NamedQuery(name="Product.findAll",query="SELECT p FROM Product p")})
 public class Product {
 	@Id
-	// @GeneratedValue(strategy=GenerationType.SEQUENCE,generator="SEQ_ID")
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@SequenceGenerator(sequenceName = "SEQ_ID", name = "SEQ_ID", initialValue = 0, allocationSize = 1)
 	private int id;

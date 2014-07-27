@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -35,6 +36,11 @@ public class User{
     
     @ManyToMany(mappedBy="users",fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
 	 private List<Product> products;
+    
+    @ManyToOne 
+    @JoinColumn(name="association_id")
+    @LazyCollection(LazyCollectionOption.FALSE) 
+ 	private Association association;
     
     @OneToMany 
     @JoinColumn(name="user_id")
@@ -79,6 +85,14 @@ public class User{
 
 	public void setCards(List<Card> cards) {
 		this.cards = cards;
+	}
+
+	public Association getAssociation() {
+		return association;
+	}
+
+	public void setAssociation(Association association) {
+		this.association = association;
 	}
   
 }
