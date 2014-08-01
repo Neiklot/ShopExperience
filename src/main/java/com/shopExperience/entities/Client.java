@@ -34,15 +34,12 @@ public class Client{
     @Column(name="PASSWORD",nullable=false, length = 50)
     private String password;
     
-    @ManyToMany(mappedBy="clients",fetch=FetchType.EAGER,cascade=CascadeType.MERGE)
-	 private List<Product> products;
-    
     @ManyToOne 
     @JoinColumn(name="association_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
  	private Association association;
     
-    @OneToMany 
+    @OneToMany(cascade=CascadeType.PERSIST) 
     @JoinColumn(name="client_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
     private List<Card> cards;
@@ -69,14 +66,6 @@ public class Client{
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public List<Product> getProducts() {
-		return products;
-	}
-
-	public void setProducts(List<Product> products) {
-		this.products = products;
 	}
 
 	public List<Card> getCards() {

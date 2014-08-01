@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
@@ -15,6 +17,8 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Card")
+@NamedQueries({
+@NamedQuery(name="Card.findAll",query="SELECT c FROM Card c")})
 public class Card {
 
 	@Id
@@ -22,9 +26,12 @@ public class Card {
 	@SequenceGenerator(sequenceName = "SEQ_ID", name = "SEQ_ID", initialValue = 0, allocationSize = 1)
 	private int id;
 
+	@Column(name = "BARCODE", nullable = false, length = 50)
+	private String barcode;
+	
 	@ManyToOne
-    @JoinColumn(name="client_id")
-    @LazyCollection(LazyCollectionOption.FALSE) 
+	@JoinColumn(name = "client_id")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private Client client;
 
 	public int getId() {
@@ -42,6 +49,14 @@ public class Card {
 
 	public void setClient(Client client) {
 		this.client = client;
+	}
+
+	public String getBarcode() {
+		return barcode;
+	}
+
+	public void setBarcode(String barcode) {
+		this.barcode = barcode;
 	}
 
 }

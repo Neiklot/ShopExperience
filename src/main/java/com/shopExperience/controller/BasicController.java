@@ -62,7 +62,6 @@ public class BasicController {
 			ModelTableClient mTableClient = new ModelTableClient();
 			mTableClient.setClientId(client.getId());
 			mTableClient.setClientName(client.getClientName());
-			numProducts = client.getProducts().size();
 			mTableClient.setCard("A");
 			if (client.getCards().size() > 0) {
 				Card card = client.getCards().get(0);
@@ -70,8 +69,6 @@ public class BasicController {
 			}
 			if (numProducts > 0) {
 				mTableClient.setTotalProducts(numProducts);
-				mTableClient.setLastProduct(client.getProducts()
-						.get(numProducts - 1).getName());
 			}
 			clientsModel.add(mTableClient);
 		}
@@ -109,8 +106,19 @@ public class BasicController {
 	@Transactional
 	public String addClient(Client client) {
 		try {
-			client.setProducts(getProducts());
 			entityManager.persist(client);
+			entityManager.flush();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return "RegistrationSuccess";
+	}
+
+	@RequestMapping(value = "/addCard", method = RequestMethod.GET)
+	@Transactional
+	public String addCard(Card card) {
+		try {
+			entityManager.persist(card);
 			entityManager.flush();
 		} catch (Exception e) {
 			System.out.println(e.toString());
@@ -136,6 +144,26 @@ public class BasicController {
 		return query.getResultList();
 	}
 
+	public List<Card> getCards() {
+		TypedQuery<Card> query = entityManager.createNamedQuery("Card.findAll",
+				Card.class);
+		return query.getResultList();
+	}
+
+	public Card searchCardByBarCode(String barCode) {
+		//FIXME:EAN13 UPC_A reading error
+		if(barCode.length()<13){barCode="0"+barCode;}
+		Card cardFound = null;
+		TypedQuery<Card> query = entityManager.createNamedQuery("Card.findAll",
+				Card.class);
+		for (Card card : query.getResultList()) {
+			if (card.getBarcode().equals(barCode)) {
+				cardFound = card;
+			}
+		}
+		return cardFound;
+	}
+
 	@RequestMapping(value = "getClients", method = RequestMethod.GET)
 	@ResponseBody
 	public JqGridData<ModelTableClient> getClients(
@@ -157,11 +185,11 @@ public class BasicController {
 
 		return gridData;
 	}
-	
+
 	@RequestMapping(value = "getShops", method = RequestMethod.GET)
 	@ResponseBody
-	public JqGridData<ModelTableShop> getShops(
-			@RequestParam("page") int page, @RequestParam("rows") int rows,
+	public JqGridData<ModelTableShop> getShops(@RequestParam("page") int page,
+			@RequestParam("rows") int rows,
 			@RequestParam("sidx") String sortColumnId,
 			@RequestParam("sord") String sortDirection) {
 
@@ -170,8 +198,8 @@ public class BasicController {
 		int currentPageNumber = GridUtils.getCurrentPageNumber(shopsModel,
 				page, rows);
 		int totalNumberOfRecords = shopsModel.size();
-		List<ModelTableShop> pageData = GridUtils.getDataForPage(
-				shopsModel, page, rows);
+		List<ModelTableShop> pageData = GridUtils.getDataForPage(shopsModel,
+				page, rows);
 
 		JqGridData<ModelTableShop> gridData = new JqGridData<ModelTableShop>(
 				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,

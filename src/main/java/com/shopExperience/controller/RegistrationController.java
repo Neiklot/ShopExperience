@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.xml.sax.SAXException;
 
+import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
 
 @Controller
@@ -26,40 +27,73 @@ public class RegistrationController {
 	@Autowired
 	BasicController bc;
 
-	public String generateBarCode() throws IOException, BarcodeException, SAXException {
-
+	public String generateBarCode() throws IOException, BarcodeException,
+			SAXException {
 		final int dpi = 150;
-		File outputFile = new File("out.png");
+		String code = generateCode();
+		File outputFile = new File(code+".png");
 		OutputStream out = new FileOutputStream(outputFile);
 		try {
-		    BitmapCanvasProvider canvas = new BitmapCanvasProvider(
-		            out, "image/x-png", dpi, BufferedImage.TYPE_BYTE_BINARY, false, 0);
-		    new EAN13Bean().generateBarcode( canvas, "1234567890135" );
+			BitmapCanvasProvider canvas = new BitmapCanvasProvider(out,
+					"image/x-png", dpi, BufferedImage.TYPE_BYTE_BINARY, false,
+					0);
+			new EAN13Bean().generateBarcode(canvas, code);
 
-		    canvas.finish();
+			canvas.finish();
 		} finally {
-		    out.close();
+			out.close();
+		}
+		return code;
+	}
+
+	public String generateCode() {
+		int lastCode = 0;
+		if (bc.getCards() != null && bc.getCards().size() > 0) {
+			String lastBarCode=bc.getCards().get(bc.getCards().size() - 1)
+					.getBarcode();
+			lastCode=Integer.parseInt(lastBarCode.substring(0, 12));
+			lastCode++;
+		}
+		String newCode=String.format("%012d", lastCode);
+		String checkSum=checkSumCalcul(newCode);
+
+		return newCode+checkSum;
+
+	}
+	
+	public String checkSumCalcul(String newCode){
+		int checkSumInt=0;
+		for(int i=0;i<12;i++){
+			if(i%2==0){
+				checkSumInt+=Integer.parseInt(""+newCode.charAt(i))*1;
+			}else{
+				checkSumInt+=Integer.parseInt(""+newCode.charAt(i))*3;
+			}
 		}
 
-		return "ERROR";
+		return ""+(10-checkSumInt%10);
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String viewRegistration(Map<String, Object> model)
-			throws IOException,  BarcodeException, SAXException {
-		Client clientForm = new Client();
-		String barcodeNr = generateBarCode();
-		model.put("clientForm", clientForm);
-
+	public String viewRegistration(Map<String, Object> model) {
+		Client client = new Client();
+		model.put("clientForm", client);
 		return "Registration";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public String processRegistration(
 			@ModelAttribute("clientForm") Client client,
-			Map<String, Object> model) {
+			Map<String, Object> model) throws IOException, BarcodeException,
+			SAXException {
+
+		Card card = new Card();
+		String barcodeNr = generateBarCode();
+		card.setBarcode(barcodeNr);
+		card.setClient(client);
 
 		bc.addClient(client);
+		bc.addCard(card);
 		// for testing purpose:
 		System.out.println("clientName: " + client.getClientName());
 		System.out.println("password: " + client.getPassword());
