@@ -12,8 +12,7 @@
 </style>
 </head>
 <body onload='document.f.j_username.focus();'>
-	<h3>Login with Clientname and Password (Custom Page)</h3>
- 
+<div class="bodyPage">
 	<c:if test="${not empty error}">
 		<div class="errorblock">
 			Your login attempt was not successful, try again.<br /> Caused :
@@ -23,29 +22,28 @@
  
 	<form name='f' action="<c:url value='j_spring_security_check' />"
 		method='POST' >
- 
-		<table   style='margin-left:25%'>
+ 	Login with Clientname and Password (Custom Page)
+		<table   style='margin-left:25%;margin-top:18px;'>
 			<tr>
 				<td>Client:</td>
-				<td><input type='text' name='j_username' value=''>
+				<td colspan="2"><input type='text' name='j_username' value=''>
 				</td>
 			</tr>
-			<tr>
+			<tr >
 				<td>Password:</td>
-				<td><input type='password' name='j_password' />
+				<td colspan="2"><input type='password' name='j_password' />
 				</td>
 			</tr>
-			<tr>
-				<td colspan='2'><input name="submit" type="submit"
-					value="submit" />
+			<tr><td></td>
+				<td><input name="submit" type="submit"
+					value="Aceptar" />
 				</td>
-			</tr>
-			<tr>
-				<td colspan='2'><input name="reset" type="reset" />
+				<td><input name="reset" type="reset" />
 				</td>
 			</tr>
 		</table>
  
 	</form>
+	</div>
 </body>
 <%@ include file="footer.jsp" %>
