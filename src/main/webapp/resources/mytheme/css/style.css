@@ -6,6 +6,7 @@ body {
 	margin-right: 5%;
 	height: 100%;
 	background-color: silver;
+	background-image: url("images/diffuse.jpg");
 }
 
 button {
@@ -17,11 +18,8 @@ a {
 	margin-top: 25px;
 	margin-left:20px;
 }
-
+ 
 .boton {
-	background: url(http://www.ashleyjt.net/windows/images/Android.png)
-		/* Url de la imagen */ no-repeat center center, cornflowerblue
-		/* Color del botón */;
 	background-size: 60%; /* Tamaño de la imagen */
 	height: 50px; /* Alto del botón */
 	width: 50px; /* Ancho del botón */
@@ -100,6 +98,9 @@ div.bodyPage {
 	width: 100%;
 	height: 500px;
 	background-color: snow ;
+	background-image: url("images/Shop&Experience.png");
+	background-repeat:no-repeat;
+	background-position:center; 
 	overflow: hidden; 
 }
 

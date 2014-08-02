@@ -70,7 +70,7 @@ public class RegistrationController {
 				checkSumInt+=Integer.parseInt(""+newCode.charAt(i))*3;
 			}
 		}
-
+		if(checkSumInt==0){return ""+0;}
 		return ""+(10-checkSumInt%10);
 	}
 
