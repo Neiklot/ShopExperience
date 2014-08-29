@@ -34,6 +34,11 @@ public class Card {
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Client client;
 	
+	@ManyToOne
+	@JoinColumn(name = "association_id")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private Association association;
+	
 	@Column(name="POINTS",nullable=false,length=50)
 	private int points;
 
@@ -68,6 +73,14 @@ public class Card {
 
 	public void setPoints(int points) {
 		this.points = points;
+	}
+
+	public Association getAssociation() {
+		return association;
+	}
+
+	public void setAssociation(Association association) {
+		this.association = association;
 	}
 
 }

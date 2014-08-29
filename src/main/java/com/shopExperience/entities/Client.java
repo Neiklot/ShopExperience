@@ -35,9 +35,9 @@ public class Client{
     private String password;
     
     @ManyToOne 
-    @JoinColumn(name="association_id")
+    @JoinColumn(name="shop_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
- 	private Association association;
+ 	private Shop shop;
     
     @OneToMany(cascade=CascadeType.PERSIST) 
     @JoinColumn(name="client_id")
@@ -76,12 +76,12 @@ public class Client{
 		this.cards = cards;
 	}
 
-	public Association getAssociation() {
-		return association;
+	public Shop getShop() {
+		return shop;
 	}
 
-	public void setAssociation(Association association) {
-		this.association = association;
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
   
 }

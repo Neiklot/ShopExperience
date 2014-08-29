@@ -2,10 +2,8 @@ package com.shopExperience.entities;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,15 +33,20 @@ public class Association {
 	@Column(name = "DESCRIPTION", nullable = true, length = 250)
 	private String description;
 	
-	@ManyToMany
-	@JoinColumn(name = "client_id")
+	@OneToMany
+	@JoinColumn(name = "association_id")
 	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<Client> clients;
+	private List<Shop> shops;
 	
     @OneToMany 
-    @JoinColumn(name="client_id")
+    @JoinColumn(name="association_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
     private List<Card> cards;
+    
+    @OneToMany 
+    @JoinColumn(name="association_id")
+    @LazyCollection(LazyCollectionOption.FALSE) 
+    private List<User> users;
 
 	public int getId() {
 		return id;
@@ -69,12 +72,12 @@ public class Association {
 		this.description = description;
 	}
 
-	public List<Client> getUsers() {
-		return clients;
+	public List<Shop> getShops() {
+		return shops;
 	}
 
-	public void setUsers(List<Client> clients) {
-		this.clients = clients;
+	public void setShops(List<Shop> shops) {
+		this.shops = shops;
 	}
 
 	public List<Card> getCards() {
@@ -83,6 +86,14 @@ public class Association {
 
 	public void setCards(List<Card> cards) {
 		this.cards = cards;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
 	}
 
 }
