@@ -7,6 +7,7 @@ public class ModelTableClient {
 	private int totalProducts;
 	private String lastProduct;
 	private String card;
+	private int card_points;
 
 	public int getClientId() {
 		return clientId;
@@ -37,6 +38,12 @@ public class ModelTableClient {
 	}
 	public void setCard(String card) {
 		this.card = card;
+	}
+	public int getCard_points() {
+		return card_points;
+	}
+	public void setCard_points(int card_points) {
+		this.card_points = card_points;
 	}
 
 	

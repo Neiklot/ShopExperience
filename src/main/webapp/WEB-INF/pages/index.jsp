@@ -38,7 +38,7 @@
 						},
 						colNames : [ 'Id Cliente', 'Cliente',
 								'Total Productos', 'Ultimo Producto',
-								'Tarjeta Asignada' ],
+								'Tarjeta Asignada','Total puntos' ],
 						colModel : [ {
 							name : 'clientId',
 							index : 'clientId',
@@ -58,8 +58,12 @@
 						}, {
 							name : 'card',
 							index : 'card',
-							width : 250
-						} ],
+							width : 100
+						} , {
+							name : 'card_points',
+							index : 'card_points',
+							width : 100
+						}],
 						rowNum : 5,
 						rowList : [ 5, 10, 20 ],
 						height : 165,
