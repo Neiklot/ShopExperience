@@ -33,6 +33,9 @@ public class Card {
 	@JoinColumn(name = "client_id")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Client client;
+	
+	@Column(name="POINTS",nullable=false,length=50)
+	private int points;
 
 	public int getId() {
 		return id;
