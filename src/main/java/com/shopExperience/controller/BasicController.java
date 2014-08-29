@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
-import com.shopExperience.entities.Product;
 import com.shopExperience.entities.Shop;
 import com.shopExperience.entities.User;
 import com.shopExperience.pagination.GridUtils;
@@ -66,9 +65,6 @@ public class BasicController {
 			if (client.getCards().size() > 0) {
 				Card card = client.getCards().get(0);
 				mTableClient.setCard("" + card.getId());
-			}
-			if (numProducts > 0) {
-				mTableClient.setTotalProducts(numProducts);
 			}
 			clientsModel.add(mTableClient);
 		}
@@ -136,12 +132,6 @@ public class BasicController {
 			System.out.println(e.toString());
 		}
 		return "RegistrationSuccess";
-	}
-
-	public List<Product> getProducts() {
-		TypedQuery<Product> query = entityManager.createNamedQuery(
-				"Product.findAll", Product.class);
-		return query.getResultList();
 	}
 
 	public List<Card> getCards() {

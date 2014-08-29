@@ -36,34 +36,21 @@
 							repeatitems : false,
 							id : "ref"
 						},
-						colNames : [ 'Id Cliente', 'Cliente',
-								'Total Productos', 'Ultimo Producto',
-								'Tarjeta Asignada','Total puntos' ],
+						colNames : [ 'Cliente', 'Tarjeta Asignada',
+								'Total puntos' ],
 						colModel : [ {
-							name : 'clientId',
-							index : 'clientId',
-							width : 100
-						}, {
 							name : 'clientName',
 							index : 'clientName',
-							width : 250
-						}, {
-							name : 'totalProducts',
-							index : 'totalProducts',
-							width : 100
-						}, {
-							name : 'lastProduct',
-							index : 'lastProduct',
 							width : 250
 						}, {
 							name : 'card',
 							index : 'card',
 							width : 100
-						} , {
+						}, {
 							name : 'card_points',
 							index : 'card_points',
 							width : 100
-						}],
+						} ],
 						rowNum : 5,
 						rowList : [ 5, 10, 20 ],
 						height : 165,
