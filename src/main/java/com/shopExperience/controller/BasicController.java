@@ -61,7 +61,7 @@ public class BasicController {
 			ModelTableClient mTableClient = new ModelTableClient();
 			mTableClient.setClientId(client.getId());
 			mTableClient.setClientName(client.getClientName());
-			mTableClient.setCard("A");
+			mTableClient.setCard(""+client.getCards().size());
 			if (client.getCards().size() > 0) {
 				Card card = client.getCards().get(0);
 				mTableClient.setCard("" + card.getId());

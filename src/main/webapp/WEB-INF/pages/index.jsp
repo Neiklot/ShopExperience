@@ -36,7 +36,7 @@
 							repeatitems : false,
 							id : "ref"
 						},
-						colNames : [ 'Cliente', 'Tarjeta Asignada',
+						colNames : [ 'Cliente', 'Tarjetas',
 								'Total puntos' ],
 						colModel : [ {
 							name : 'clientName',
@@ -57,7 +57,7 @@
 						pager : "#pagingDiv",
 						viewrecords : true,
 						hiddengrid : true,
-						caption : "Clientes con productos",
+						caption : "Clientes",
 						onSelectRow : function() {
 							var selr = jQuery('#dataTable').jqGrid(
 									'getGridParam', 'selrow');
