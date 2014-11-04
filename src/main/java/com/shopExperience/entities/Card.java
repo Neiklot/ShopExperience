@@ -1,8 +1,8 @@
 package com.shopExperience.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,7 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 
 import org.hibernate.annotations.LazyCollection;
@@ -33,12 +32,7 @@ public class Card {
 	@JoinColumn(name = "client_id")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private Client client;
-	
-	@ManyToOne
-	@JoinColumn(name = "association_id")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private Association association;
-	
+
 	@Column(name="POINTS",nullable=false,length=50)
 	private int points;
 
@@ -73,14 +67,6 @@ public class Card {
 
 	public void setPoints(int points) {
 		this.points = points;
-	}
-
-	public Association getAssociation() {
-		return association;
-	}
-
-	public void setAssociation(Association association) {
-		this.association = association;
 	}
 
 }

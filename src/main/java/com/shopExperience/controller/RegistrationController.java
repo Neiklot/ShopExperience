@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.xml.sax.SAXException;
 
+import com.shopExperience.entities.Association;
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
 
@@ -86,14 +87,16 @@ public class RegistrationController {
 			@ModelAttribute("clientForm") Client client,
 			Map<String, Object> model) throws IOException, BarcodeException,
 			SAXException {
-
+		Association association=new Association();
+		if (bc.getAssociations() != null && bc.getAssociations().size() > 0) {
+			association=bc.getAssociations().iterator().next();
+		}
 		Card card = new Card();
 		String barcodeNr = generateBarCode();
 		card.setBarcode(barcodeNr);
 		card.setClient(client);
 
-		bc.addClient(client);
-		bc.addCard(card);
+//		bc.addClient(client);
 		// for testing purpose:
 		System.out.println("clientName: " + client.getClientName());
 		System.out.println("password: " + client.getPassword());

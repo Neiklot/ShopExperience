@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -37,11 +36,6 @@ public class Association {
 	@JoinColumn(name = "association_id")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Shop> shops;
-	
-    @OneToMany 
-    @JoinColumn(name="association_id")
-    @LazyCollection(LazyCollectionOption.FALSE) 
-    private List<Card> cards;
     
     @OneToMany 
     @JoinColumn(name="association_id")
@@ -78,14 +72,6 @@ public class Association {
 
 	public void setShops(List<Shop> shops) {
 		this.shops = shops;
-	}
-
-	public List<Card> getCards() {
-		return cards;
-	}
-
-	public void setCards(List<Card> cards) {
-		this.cards = cards;
 	}
 
 	public List<User> getUsers() {

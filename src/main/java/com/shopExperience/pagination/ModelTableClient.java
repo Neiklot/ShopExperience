@@ -3,7 +3,8 @@ package com.shopExperience.pagination;
 public class ModelTableClient {
 	
 	private int clientId;
-	private String clientName;
+	private String ClientName;
+	private String password;
 	private String card;
 	private int card_points;
 
@@ -14,10 +15,10 @@ public class ModelTableClient {
 		this.clientId = clientId;
 	}
 	public String getClientName() {
-		return clientName;
+		return ClientName;
 	}
 	public void setClientName(String clientName) {
-		this.clientName = clientName;
+		this.ClientName = clientName;
 	}
 	public String getCard() {
 		return card;
@@ -31,6 +32,11 @@ public class ModelTableClient {
 	public void setCard_points(int card_points) {
 		this.card_points = card_points;
 	}
-
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	
 }

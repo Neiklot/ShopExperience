@@ -39,7 +39,7 @@ public class Client{
     @LazyCollection(LazyCollectionOption.FALSE) 
  	private Shop shop;
     
-    @OneToMany(cascade=CascadeType.PERSIST) 
+    @OneToMany
     @JoinColumn(name="client_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
     private List<Card> cards;
