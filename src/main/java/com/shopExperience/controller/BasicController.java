@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -30,6 +31,7 @@ import com.shopExperience.pagination.ModelTableAssociation;
 import com.shopExperience.pagination.ModelTableCard;
 import com.shopExperience.pagination.ModelTableClient;
 import com.shopExperience.pagination.ModelTableShop;
+import com.shopExperience.security.CustomUserDetails;
 import com.shopExperience.utils.JqgridFilter;
 import com.shopExperience.utils.JqgridObjectMapper;
 
@@ -51,37 +53,50 @@ public class BasicController {
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
 	public String listClients(ModelMap model) {
+		String indexType = "index";
+		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+		int userType = user.getType();
 
-		shopsModel = new ArrayList<ModelTableShop>();
-		associationsModel = new ArrayList<ModelTableAssociation>();
+		switch (userType) {
+		case 1:
+			shopsModel = new ArrayList<ModelTableShop>();
+			associationsModel = new ArrayList<ModelTableAssociation>();
 
-		List<Shop> shops = new ArrayList<Shop>();
-		List<Association> associations = new ArrayList<Association>();
+			List<Shop> shops = new ArrayList<Shop>();
+			List<Association> associations = new ArrayList<Association>();
 
-		TypedQuery<Shop> queryShops = entityManager.createNamedQuery(
-				"Shop.findAll", Shop.class);
-		shops = queryShops.getResultList();
+			TypedQuery<Shop> queryShops = entityManager.createNamedQuery(
+					"Shop.findAll", Shop.class);
+			shops = queryShops.getResultList();
 
-		TypedQuery<Association> queryAssociation = entityManager
-				.createNamedQuery("Association.findAll", Association.class);
-		associations = queryAssociation.getResultList();
-		int numProducts = 0, numCard = 0;
+			TypedQuery<Association> queryAssociation = entityManager
+					.createNamedQuery("Association.findAll", Association.class);
+			associations = queryAssociation.getResultList();
+			int numProducts = 0,
+			numCard = 0;
 
-		// Table associations
-		for (Association association : associations) {
-			ModelTableAssociation mTableAssociation = new ModelTableAssociation();
-			mTableAssociation.setAssociationId(association.getId());
-			mTableAssociation.setAssociationName(association.getName());
-			associationsModel.add(mTableAssociation);
+			// Table associations
+			for (Association association : associations) {
+				ModelTableAssociation mTableAssociation = new ModelTableAssociation();
+				mTableAssociation.setAssociationId(association.getId());
+				mTableAssociation.setAssociationName(association.getName());
+				associationsModel.add(mTableAssociation);
+			}
+			// Table shops
+			for (Shop shop : shops) {
+				ModelTableShop mTableShop = new ModelTableShop();
+				mTableShop.setShopId(shop.getId());
+				mTableShop.setShopName(shop.getName());
+				shopsModel.add(mTableShop);
+			}
+			indexType = "index";
+			break;
+		case 2:
+			indexType = "indexShop";
+			break;
 		}
-		// Table shops
-		for (Shop shop : shops) {
-			ModelTableShop mTableShop = new ModelTableShop();
-			mTableShop.setShopId(shop.getId());
-			mTableShop.setShopName(shop.getName());
-			shopsModel.add(mTableShop);
-		}
-		return "index";
+		return indexType;
 	}
 
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
@@ -106,16 +121,15 @@ public class BasicController {
 
 	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
 	@Transactional
-	public String addClient(
-			@RequestParam("clientName") String clientName,
+	public String addClient(@RequestParam("clientName") String clientName,
 			@RequestParam("password") String password,
 			@RequestParam("card") String card,
 			@RequestParam("card_points") String points) {
-		
-		Client client=new Client();
+
+		Client client = new Client();
 		client.setClientName(clientName);
 		client.setPassword(password);
-		
+
 		try {
 			entityManager.persist(client);
 			entityManager.flush();
@@ -124,18 +138,16 @@ public class BasicController {
 		}
 		return "RegistrationSuccess";
 	}
-	
+
 	@RequestMapping(value = "/addCard", method = RequestMethod.POST)
 	@Transactional
-	public String addCard(
-			@RequestParam("barcode") String barcode,
-			@RequestParam("points") int points)
-			{
-		
-		Card card=new Card();
+	public String addCard(@RequestParam("barcode") String barcode,
+			@RequestParam("points") int points) {
+
+		Card card = new Card();
 		card.setBarcode(barcode);
 		card.setPoints(points);
-		
+
 		try {
 			entityManager.persist(card);
 			entityManager.flush();
@@ -144,16 +156,16 @@ public class BasicController {
 		}
 		return "RegistrationSuccess";
 	}
-	
-	@RequestMapping(value = "/getSelectableShops",method = RequestMethod.GET)
+
+	@RequestMapping(value = "/getSelectableShops", method = RequestMethod.GET)
 	@ResponseBody
 	public List<String> getSelectableShops() {
-			List<String> barcodes=new ArrayList<String>();
-			for(Card card:this.getCards()){
-				barcodes.add(card.getBarcode());
-			}
-			    return barcodes;
-			}
+		List<String> barcodes = new ArrayList<String>();
+		for (Card card : this.getCards()) {
+			barcodes.add(card.getBarcode());
+		}
+		return barcodes;
+	}
 
 	@RequestMapping(value = "/addCard", method = RequestMethod.GET)
 	@Transactional
@@ -205,6 +217,49 @@ public class BasicController {
 			}
 		}
 		return cardFound;
+	}
+
+	@RequestMapping(value = "/searchClientByBarcode", method = RequestMethod.GET)
+	@ResponseBody
+	public String searchClientByBarCode(@RequestParam("barcode") String barcode) {
+		Client clientFound = new Client();
+		
+		// FIXME:EAN13 UPC_A reading error
+		if (barcode.matches("[0-9]+")) {
+
+			if (barcode.length() < 13) {
+				barcode = "0" + barcode;
+			}
+
+			TypedQuery<Client> query = entityManager.createNamedQuery(
+					"Client.findAll", Client.class);
+
+			for (Client client : query.getResultList()) {
+				for (Card card : client.getCards()) {
+					if (card.getClass().equals(barcode)) {
+						clientFound = client;
+					}
+				}
+			}
+			clientFound.setClientName("Usuario por barcode");
+		} else {
+
+			if (barcode.length() < 13) {
+				barcode = "0" + barcode;
+			}
+			TypedQuery<Client> query = entityManager.createNamedQuery(
+					"Client.findAll", Client.class);
+
+			for (Client client : query.getResultList()) {
+				for (Card card : client.getCards()) {
+					if (card.getClass().equals(barcode)) {
+						clientFound = client;
+					}
+				}
+			}
+			clientFound.setClientName("Usuario por nombre");
+		}
+		return clientFound.getClientName();
 	}
 
 	@RequestMapping(value = "getClients", method = RequestMethod.GET)
@@ -261,12 +316,11 @@ public class BasicController {
 
 		return gridData;
 	}
-	
-	
+
 	@RequestMapping(value = "getCards", method = RequestMethod.GET)
 	@ResponseBody
-	public JqGridData<ModelTableCard> getCards(
-			@RequestParam("page") int page, @RequestParam("rows") int rows,
+	public JqGridData<ModelTableCard> getCards(@RequestParam("page") int page,
+			@RequestParam("rows") int rows,
 			@RequestParam("sidx") String sortColumnId,
 			@RequestParam("sord") String sortDirection,
 			@RequestParam("_search") boolean search,
@@ -288,7 +342,7 @@ public class BasicController {
 			query = createFilterCard(query, cb, cq, from, filters);
 		}
 
-		cards= query.getResultList();
+		cards = query.getResultList();
 
 		// Table clients
 		for (Card card : cards) {
@@ -304,8 +358,8 @@ public class BasicController {
 		int currentPageNumber = GridUtils.getCurrentPageNumber(cardsModel,
 				page, rows);
 		int totalNumberOfRecords = cardsModel.size();
-		List<ModelTableCard> pageData = GridUtils.getDataForPage(
-				cardsModel, page, rows);
+		List<ModelTableCard> pageData = GridUtils.getDataForPage(cardsModel,
+				page, rows);
 
 		JqGridData<ModelTableCard> gridData = new JqGridData<ModelTableCard>(
 				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
@@ -399,9 +453,10 @@ public class BasicController {
 		}
 		return query;
 	}
-	
-	private void defineOperationCard(CriteriaBuilder cb, CriteriaQuery<Card> cq,
-			List<Predicate> predicates, JqgridFilter jqgridFilter) {
+
+	private void defineOperationCard(CriteriaBuilder cb,
+			CriteriaQuery<Card> cq, List<Predicate> predicates,
+			JqgridFilter jqgridFilter) {
 		if (jqgridFilter.getGroupOp().endsWith("OR")) {
 			cq.where(cb.or(predicates.toArray(new Predicate[] {})));
 		} else {
@@ -409,7 +464,6 @@ public class BasicController {
 		}
 	}
 
-	
 	private void defineOperation(CriteriaBuilder cb, CriteriaQuery<Client> cq,
 			List<Predicate> predicates, JqgridFilter jqgridFilter) {
 		if (jqgridFilter.getGroupOp().endsWith("OR")) {

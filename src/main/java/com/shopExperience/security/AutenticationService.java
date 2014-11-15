@@ -1,7 +1,5 @@
 package com.shopExperience.security;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -42,20 +40,11 @@ public class AutenticationService implements UserDetailsService {
 
 		String username = user.getUserName();
 		String password = user.getPassword();
+		int type=user.getTipe();
 
-		@SuppressWarnings("unused")
-		Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-
-		@SuppressWarnings("deprecation")
-		org.springframework.security.core.userdetails.User userValidated = new org.springframework.security.core.userdetails.User(
-				username,
-				password,
-				true,
-				true,
-				true,
-				true,
-				new GrantedAuthority[] { new GrantedAuthorityImpl("ROLE_USER") });
-
+		CustomUserDetails userValidated = new CustomUserDetails (username, password, true, true, true, true,
+		            type);
+		
 		return userValidated;
 	}
 }

@@ -1,20 +1,14 @@
 package com.shopExperience.entities;
 
-import java.util.List;
-
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -33,8 +27,11 @@ public class User {
 
     @Column(name="PASSWORD",nullable=false, length = 50)
     private String password;
-     
-    @ManyToOne 
+    
+    @Column(name="User_TIPE",nullable=false,length=50)
+    private int tipe;
+
+	@ManyToOne 
     @JoinColumn(name="association_id")
     @LazyCollection(LazyCollectionOption.FALSE) 
  	private Association association;
@@ -83,6 +80,16 @@ public class User {
 	public void setShop(Shop shop) {
 		this.shop = shop;
 	}
+	
+    
+   public int getTipe() {
+		return tipe;
+	}
+
+	public void setTipe(int tipe) {
+		this.tipe = tipe;
+	}
+
 
 	
 }
