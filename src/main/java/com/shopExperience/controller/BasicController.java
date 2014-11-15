@@ -223,7 +223,7 @@ public class BasicController {
 	@ResponseBody
 	public String searchClientByBarCode(@RequestParam("barcode") String barcode) {
 		Client clientFound = new Client();
-		
+		clientFound.setClientName("Usuario no encontrado");
 		// FIXME:EAN13 UPC_A reading error
 		if (barcode.matches("[0-9]+")) {
 
@@ -231,33 +231,24 @@ public class BasicController {
 				barcode = "0" + barcode;
 			}
 
-			TypedQuery<Client> query = entityManager.createNamedQuery(
-					"Client.findAll", Client.class);
+			TypedQuery<Card> query = entityManager.createNamedQuery(
+					"Card.findAll", Card.class);
 
-			for (Client client : query.getResultList()) {
-				for (Card card : client.getCards()) {
-					if (card.getClass().equals(barcode)) {
-						clientFound = client;
-					}
+			for (Card card : query.getResultList()) {
+				if (card.getBarcode().equals(barcode)) {
+					clientFound = card.getClient();
 				}
 			}
-			clientFound.setClientName("Usuario por barcode");
 		} else {
-
-			if (barcode.length() < 13) {
-				barcode = "0" + barcode;
-			}
-			TypedQuery<Client> query = entityManager.createNamedQuery(
-					"Client.findAll", Client.class);
-
-			for (Client client : query.getResultList()) {
-				for (Card card : client.getCards()) {
-					if (card.getClass().equals(barcode)) {
-						clientFound = client;
-					}
+			TypedQuery<Client> query =
+				      entityManager.createNamedQuery(
+								"Client.findAll", Client.class);
+			for(Client client:query.getResultList()){
+				if(client.getClientName().equals(barcode)){
+					clientFound=client;
 				}
 			}
-			clientFound.setClientName("Usuario por nombre");
+
 		}
 		return clientFound.getClientName();
 	}
