@@ -16,13 +16,21 @@ button {
 a {
 	text-decoration: none;
 	margin-top: 25px;
-	margin-left:20px;
+	margin-left: 20px;
 }
- 
+
+:focus {
+	outline: 0;
+}
+
+a img {
+	border: 0;
+}
+
 .boton {
-	background-size: 60%; /* TamaÃ±o de la imagen */
-	height: 50px; /* Alto del botÃ³n */
-	width: 50px; /* Ancho del botÃ³n */
+	background-size: 60%; /* Tamaño de la imagen */
+	height: 50px; /* Alto del botón */
+	width: 50px; /* Ancho del botón */
 	display: table;
 	border-radius: 100%;
 	cursor: pointer;
@@ -37,7 +45,7 @@ a {
 /* Al presionar */
 .boton:active {
 	box-shadow: inset 0 5px 30px rgba(0, 0, 0, .2); /* Sombra interior */
-	background-size: 55%; /* Cambiamos el tamaÃ±o de la imagen */
+	background-size: 55%; /* Cambiamos el tamaño de la imagen */
 	border-radius: 100%;
 }
 
@@ -45,11 +53,12 @@ a {
 	opacity: 0;
 	width: 100px;
 }
+
 .boton:hover {
 	box-shadow: inset 0 5px 30px rgba(0, 0, 0, .2); /* Sombra interior */
 }
+
 .boton:hover span {
-	
 	opacity: 1;
 	color: black;
 }
@@ -86,22 +95,25 @@ div.centreDiv {
 	width: 85%;
 	height: 500px;
 	margin: auto;
-	float:left
+	float: left
 }
+
 div.buttons {
 	width: 10%;
 	margin: auto;
-	float:left
+	float: left;
+	text-align: left;
+	text-size: 15px;
 }
 
 div.bodyPage {
 	width: 100%;
 	height: 500px;
-	background-color: snow ;
+	background-color: snow;
 	background-image: url("images/Shop&Experience.png");
-	background-repeat:no-repeat;
-	background-position:center; 
-	overflow: hidden; 
+	background-repeat: no-repeat;
+	background-position: center;
+	overflow: hidden;
 }
 
 div.form {

@@ -139,6 +139,20 @@ public class BasicController {
 		return "RegistrationSuccess";
 	}
 
+	@RequestMapping(value = "/deleteClient", method = RequestMethod.POST)
+	@Transactional
+	public String deleteClient(@RequestParam("id") int clientId) {
+		Client client = this.searchClientById(clientId);
+
+		try {
+			entityManager.remove(client);
+			entityManager.flush();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return "RegistrationSuccess";
+	}
+
 	@RequestMapping(value = "/addCard", method = RequestMethod.POST)
 	@Transactional
 	public String addCard(@RequestParam("barcode") String barcode,
@@ -167,17 +181,17 @@ public class BasicController {
 		return barcodes;
 	}
 
-	@RequestMapping(value = "/addCard", method = RequestMethod.GET)
-	@Transactional
-	public String addCard(Card card) {
-		try {
-			entityManager.persist(card);
-			entityManager.flush();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-		return "RegistrationSuccess";
-	}
+	// @RequestMapping(value = "/addCard", method = RequestMethod.GET)
+	// @Transactional
+	// public String addCard(Card card) {
+	// try {
+	// entityManager.persist(card);
+	// entityManager.flush();
+	// } catch (Exception e) {
+	// System.out.println(e.toString());
+	// }
+	// return "RegistrationSuccess";
+	// }
 
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	@Transactional
@@ -240,17 +254,28 @@ public class BasicController {
 				}
 			}
 		} else {
-			TypedQuery<Client> query =
-				      entityManager.createNamedQuery(
-								"Client.findAll", Client.class);
-			for(Client client:query.getResultList()){
-				if(client.getClientName().equals(barcode)){
-					clientFound=client;
+			TypedQuery<Client> query = entityManager.createNamedQuery(
+					"Client.findAll", Client.class);
+			for (Client client : query.getResultList()) {
+				if (client.getClientName().equals(barcode)) {
+					clientFound = client;
 				}
 			}
 
 		}
 		return clientFound.getClientName();
+	}
+
+	public Client searchClientById(int clientId) {
+		Client client = new Client();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select cl from Client cl where cl.id = :clientId");
+
+		TypedQuery<Client> query = entityManager.createQuery(queryS.toString(),
+				Client.class);
+		query.setParameter("clientId", clientId);
+		client = query.getSingleResult();
+		return client;
 	}
 
 	@RequestMapping(value = "getClients", method = RequestMethod.GET)
