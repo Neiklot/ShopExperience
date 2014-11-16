@@ -30,46 +30,46 @@ public class Client {
 	@Column(name = "NIF", nullable = false, length = 50)
 	private String nif;
 
-	@Column(name = "Apellido_1", nullable = false, length = 50)
+	@Column(name = "Apellido_1", nullable = true, length = 50)
 	private String apellido1;
 
-	@Column(name = "Apellido_2", nullable = false, length = 50)
+	@Column(name = "Apellido_2", nullable = true, length = 50)
 	private String apellido2;
 
-	@Column(name = "Subnombre", nullable = false, length = 150)
-	private String subnomebre;
+	@Column(name = "Subnombre", nullable = true, length = 150)
+	private String subnombre;
 
-	@Column(name = "Direccion", nullable = false, length = 150)
+	@Column(name = "Direccion", nullable = true, length = 150)
 	private String direccion;
 
-	@Column(name = "Codigo_Postal", nullable = false, length = 50)
+	@Column(name = "Codigo_Postal", nullable = true, length = 50)
 	private int codigoPostal;
 
-	@Column(name = "Client_NAME", nullable = false, length = 50)
-	private String ClientName;
+	@Column(name = "Client_NAME", nullable = true, length = 50)
+	private String clientName;
 
-	@Column(name = "Poblacion", nullable = false, length = 150)
+	@Column(name = "Poblacion", nullable = true, length = 150)
 	private String poblacion;
 
 	@Column(name = "PASSWORD", nullable = false, length = 50)
 	private String password;
 
-	@Column(name = "Telefono", nullable = false, length = 50)
+	@Column(name = "Telefono", nullable = true, length = 50)
 	private int telefono;
 
-	@Column(name = "Movil", nullable = false, length = 50)
+	@Column(name = "Movil", nullable = true, length = 50)
 	private String movil;
 
-	@Column(name = "Email", nullable = false, length = 50)
+	@Column(name = "Email", nullable = true, length = 50)
 	private String email;
 
-	@Column(name = "Cuenta", nullable = false, length = 50)
+	@Column(name = "Cuenta", nullable = true, length = 50)
 	private int cuenta;
 
-	@Column(name = "Cuenta_IBAN", nullable = false, length = 50)
+	@Column(name = "Cuenta_IBAN", nullable = true, length = 50)
 	private String cuentaIban;
 
-	@Column(name = "Observaciones", nullable = false, length = 250)
+	@Column(name = "Observaciones", nullable = true, length = 250)
 	private String observaciones;
 
 	@Column(name = "Baja", nullable = false, length = 50)
@@ -94,11 +94,11 @@ public class Client {
 	}
 
 	public String getClientName() {
-		return ClientName;
+		return clientName;
 	}
 
 	public void setClientName(String ClientName) {
-		this.ClientName = ClientName;
+		this.clientName = ClientName;
 	}
 
 	public String getPassword() {
@@ -158,11 +158,11 @@ public class Client {
 	}
 
 	public String getSubnomebre() {
-		return subnomebre;
+		return subnombre;
 	}
 
 	public void setSubnomebre(String subnomebre) {
-		this.subnomebre = subnomebre;
+		this.subnombre = subnomebre;
 	}
 
 	public String getDireccion() {
@@ -237,7 +237,7 @@ public class Client {
 		this.observaciones = observaciones;
 	}
 
-	public boolean isBaja() {
+	public boolean getBaja() {
 		return baja;
 	}
 

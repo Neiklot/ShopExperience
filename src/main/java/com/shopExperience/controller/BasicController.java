@@ -119,40 +119,6 @@ public class BasicController {
 
 	}
 
-	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
-	@Transactional
-	public String addClient(@RequestParam("clientName") String clientName,
-			@RequestParam("password") String password,
-			@RequestParam("card") String card,
-			@RequestParam("card_points") String points) {
-
-		Client client = new Client();
-		client.setClientName(clientName);
-		client.setPassword(password);
-
-		try {
-			entityManager.persist(client);
-			entityManager.flush();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-		return "RegistrationSuccess";
-	}
-
-	@RequestMapping(value = "/deleteClient", method = RequestMethod.POST)
-	@Transactional
-	public String deleteClient(@RequestParam("id") int clientId) {
-		Client client = this.searchClientById(clientId);
-
-		try {
-			entityManager.remove(client);
-			entityManager.flush();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-		return "RegistrationSuccess";
-	}
-
 	@RequestMapping(value = "/addCard", method = RequestMethod.POST)
 	@Transactional
 	public String addCard(@RequestParam("barcode") String barcode,
@@ -266,72 +232,7 @@ public class BasicController {
 		return clientFound.getClientName();
 	}
 
-	public Client searchClientById(int clientId) {
-		Client client = new Client();
-		StringBuilder queryS = new StringBuilder();
-		queryS.append("Select cl from Client cl where cl.id = :clientId");
-
-		TypedQuery<Client> query = entityManager.createQuery(queryS.toString(),
-				Client.class);
-		query.setParameter("clientId", clientId);
-		client = query.getSingleResult();
-		return client;
-	}
-
-	@RequestMapping(value = "getClients", method = RequestMethod.GET)
-	@ResponseBody
-	public JqGridData<ModelTableClient> getClients(
-			@RequestParam("page") int page, @RequestParam("rows") int rows,
-			@RequestParam("sidx") String sortColumnId,
-			@RequestParam("sord") String sortDirection,
-			@RequestParam("_search") boolean search,
-			@RequestParam(value = "filters", required = false) String filters) {
-
-		List<Client> clients = new ArrayList<Client>();
-		clientsModel = new ArrayList<ModelTableClient>();
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-		CriteriaQuery<Client> cq = cb.createQuery(Client.class);
-		Root<Client> from = cq.from(Client.class);
-		TypedQuery<Client> query;
-
-		cq.select(from);
-		cq.orderBy(cb.asc(from.get(sortColumnId)));
-		query = entityManager.createQuery(cq);
-
-		if (search) {
-			query = createFilter(query, cb, cq, from, filters);
-		}
-
-		clients = query.getResultList();
-
-		// Table clients
-		for (Client client : clients) {
-			ModelTableClient mTableClient = new ModelTableClient();
-			mTableClient.setClientId(client.getId());
-			mTableClient.setClientName(client.getClientName());
-			mTableClient.setCard("" + client.getCards().size());
-			if (client.getCards().size() > 0) {
-				Card card = client.getCards().get(0);
-				mTableClient.setCard("" + card.getId());
-			}
-			clientsModel.add(mTableClient);
-		}
-
-		int totalNumberOfPages = GridUtils.getTotalNumberOfPages(clientsModel,
-				rows);
-		int currentPageNumber = GridUtils.getCurrentPageNumber(clientsModel,
-				page, rows);
-		int totalNumberOfRecords = clientsModel.size();
-		List<ModelTableClient> pageData = GridUtils.getDataForPage(
-				clientsModel, page, rows);
-
-		JqGridData<ModelTableClient> gridData = new JqGridData<ModelTableClient>(
-				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
-				pageData);
-
-		return gridData;
-	}
+	
 
 	@RequestMapping(value = "getCards", method = RequestMethod.GET)
 	@ResponseBody
@@ -382,49 +283,6 @@ public class BasicController {
 				pageData);
 
 		return gridData;
-	}
-
-	public TypedQuery<Client> createFilter(TypedQuery<Client> query,
-			CriteriaBuilder cb, CriteriaQuery<Client> cq, Root<Client> from,
-			String filters) {
-		JqgridFilter jqgridFilter = JqgridObjectMapper.map(filters);
-		List<Predicate> predicates = new ArrayList<Predicate>();
-		for (JqgridFilter.Rule rule : jqgridFilter.getRules()) {
-
-			switch (rule.getOp()) {
-			case "eq":
-				predicates.add(cb.equal(from.<String> get(rule.getField()),
-						rule.getData()));
-				defineOperation(cb, cq, predicates, jqgridFilter);
-				query = entityManager.createQuery(cq);
-				break;
-			case "bw":
-				predicates.add(cb.like(from.<String> get(rule.getField()),
-						rule.getData() + "%"));
-				defineOperation(cb, cq, predicates, jqgridFilter);
-				query = entityManager.createQuery(cq);
-				break;
-			case "ew":
-				predicates.add(cb.like(from.<String> get(rule.getField()), "%"
-						+ rule.getData()));
-				defineOperation(cb, cq, predicates, jqgridFilter);
-				query = entityManager.createQuery(cq);
-				break;
-			case "ne":
-				predicates.add(cb.notEqual(from.<String> get(rule.getField()),
-						rule.getData()));
-				defineOperation(cb, cq, predicates, jqgridFilter);
-				query = entityManager.createQuery(cq);
-				break;
-			case "cn":
-				predicates.add(cb.like(from.<String> get(rule.getField()), "%"
-						+ rule.getData() + "%"));
-				defineOperation(cb, cq, predicates, jqgridFilter);
-				query = entityManager.createQuery(cq);
-				break;
-			}
-		}
-		return query;
 	}
 
 	public TypedQuery<Card> createFilterCard(TypedQuery<Card> query,
@@ -480,14 +338,6 @@ public class BasicController {
 		}
 	}
 
-	private void defineOperation(CriteriaBuilder cb, CriteriaQuery<Client> cq,
-			List<Predicate> predicates, JqgridFilter jqgridFilter) {
-		if (jqgridFilter.getGroupOp().endsWith("OR")) {
-			cq.where(cb.or(predicates.toArray(new Predicate[] {})));
-		} else {
-			cq.where(cb.and(predicates.toArray(new Predicate[] {})));
-		}
-	}
 
 	@RequestMapping(value = "getShops", method = RequestMethod.GET)
 	@ResponseBody

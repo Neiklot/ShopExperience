@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <title>ShopExperience Clientes y Productos</title>
 
+</script>
 
 <script
 	src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"
@@ -46,7 +47,7 @@
 									colModel : [
 											{
 												name : 'clientName',
-												index : 'ClientName',
+												index : 'clientName',
 												width : 125,
 												editable : true,
 												editrules : {
@@ -96,7 +97,7 @@
 												}
 											},
 											{
-												name : 'Apellido 1',
+												name : 'apellido1',
 												index : 'apellido1',
 												width : 125,
 												editable : true,
@@ -108,7 +109,7 @@
 												}
 											},
 											{
-												name : 'Apellido 2',
+												name : 'apellido2',
 												index : 'apellido2',
 												width : 125,
 												editable : true,
@@ -121,7 +122,7 @@
 												}
 											},
 											{
-												name : 'SubNombre',
+												name : 'subNombre',
 												index : 'subNombre',
 												hidden : true,
 												width : 125,
@@ -134,7 +135,7 @@
 												}
 											},
 											{
-												name : 'Dirección',
+												name : 'direccion',
 												index : 'direccion',
 												width : 125,
 												editable : true,
@@ -146,7 +147,7 @@
 												}
 											},
 											{
-												name : 'Coódigo Postal',
+												name : 'codigoPostal',
 												index : 'codigoPostal',
 												width : 125,
 												editable : true,
@@ -158,7 +159,7 @@
 												}
 											},
 											{
-												name : 'Población',
+												name : 'poblacion',
 												index : 'poblacion',
 												width : 125,
 												editable : true,
@@ -170,7 +171,7 @@
 												}
 											},
 											{
-												name : 'Teléfono',
+												name : 'telefono',
 												index : 'telefono',
 												width : 125,
 												editable : true,
@@ -182,7 +183,7 @@
 												}
 											},
 											{
-												name : 'Móvil',
+												name : 'movil',
 												index : 'movil',
 												hidden : true,
 												width : 125,
@@ -195,7 +196,7 @@
 												}
 											},
 											{
-												name : 'Email',
+												name : 'email',
 												index : 'email',
 												hidden : true,
 												width : 125,
@@ -208,7 +209,7 @@
 												}
 											},
 											{
-												name : 'Cuenta',
+												name : 'cuenta',
 												index : 'cuenta',
 												hidden : true,
 												width : 125,
@@ -221,7 +222,7 @@
 												}
 											},
 											{
-												name : 'Cuenta IBAN',
+												name : 'cuentaIban',
 												index : 'cuentaIban',
 												hidden : true,
 												width : 125,
@@ -234,7 +235,7 @@
 												}
 											},
 											{
-												name : 'Observaciones',
+												name : 'observaciones',
 												index : 'observaciones',
 												hidden : true,
 												width : 350,
@@ -247,7 +248,7 @@
 												}
 											},
 											{
-												name : 'Dado de Baja',
+												name : 'baja',
 												index : 'baja',
 												hidden : true,
 												width : 50,
@@ -371,6 +372,15 @@
 					caption : "Ver Detalles",
 					buttonicon : "ui-icon-plusthick",
 					onClickButton : verDetalles,
+					position : "last",
+					title : "",
+					cursor : "pointer"
+				});
+
+				jQuery("#dataTable").navButtonAdd('#pager', {
+					caption : "Exportar",
+					buttonicon : "ui-icon-document",
+					onClickButton : exportGrid,
 					position : "last",
 					title : "",
 					cursor : "pointer"
@@ -624,34 +634,37 @@
 		if (!verDetalles) {
 			jQuery("#dataTable").hideCol('tipo');
 			jQuery("#dataTable").hideCol('NIF');
-			jQuery("#dataTable").hideCol('Apellido 2');
+			jQuery("#dataTable").hideCol('apellido2');
 			jQuery("#dataTable").hideCol('password');
-			jQuery("#dataTable").hideCol('SubNombre');
-			jQuery("#dataTable").hideCol('Móvil');
-			jQuery("#dataTable").hideCol('Email');
-			jQuery("#dataTable").hideCol('Cuenta');
-			jQuery("#dataTable").hideCol('Cuenta IBAN');
-			jQuery("#dataTable").hideCol('Observaciones');
-			jQuery("#dataTable").hideCol('Dado de Baja');
+			jQuery("#dataTable").hideCol('subNombre');
+			jQuery("#dataTable").hideCol('movil');
+			jQuery("#dataTable").hideCol('email');
+			jQuery("#dataTable").hideCol('cuenta');
+			jQuery("#dataTable").hideCol('cuentaIban');
+			jQuery("#dataTable").hideCol('observaciones');
+			jQuery("#dataTable").hideCol('baja');
 			verDetalles = true;
 		} else {
 			jQuery("#dataTable").showCol('tipo');
 			jQuery("#dataTable").showCol('NIF');
-			jQuery("#dataTable").showCol('Apellido 2');
+			jQuery("#dataTable").showCol('apellido2');
 			jQuery("#dataTable").showCol('password');
-			jQuery("#dataTable").showCol('SubNombre');
-			jQuery("#dataTable").showCol('Móvil');
-			jQuery("#dataTable").showCol('Email');
-			jQuery("#dataTable").showCol('Cuenta');
-			jQuery("#dataTable").showCol('Cuenta IBAN');
-			jQuery("#dataTable").showCol('Observaciones');
-			jQuery("#dataTable").showCol('Dado de Baja');
+			jQuery("#dataTable").showCol('subNombre');
+			jQuery("#dataTable").showCol('movil');
+			jQuery("#dataTable").showCol('email');
+			jQuery("#dataTable").showCol('cuenta');
+			jQuery("#dataTable").showCol('cuentaIban');
+			jQuery("#dataTable").showCol('observaciones');
+			jQuery("#dataTable").showCol('baja');
 			verDetalles = false;
 		}
 	}
 
 	function addRow() {
 
+		if (verDetalles) {
+			verDetalles();
+		}
 		// Get the currently selected row
 		jQuery("#dataTable").jqGrid(
 				'editGridRow',
@@ -853,6 +866,10 @@
 		else
 			jQuery("#dialogSelectRow").dialog();
 	}
+
+	function exportGrid() {
+		jQuery("#dataTable").jqGrid('exportdata', 'xls', 'jqxGrid');
+	}
 </script>
 
 </head>
@@ -919,3 +936,6 @@
 	</div>
 </body>
 <%@ include file="footer.jsp"%>
+
+
+
