@@ -13,6 +13,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 
+import org.codehaus.jackson.annotate.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -78,11 +79,13 @@ public class Client {
 	@ManyToOne
 	@JoinColumn(name = "shop_id")
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	private Shop shop;
 
 	@OneToMany
 	@JoinColumn(name = "client_id")
 	@LazyCollection(LazyCollectionOption.FALSE)
+	@JsonIgnore
 	private List<Card> cards;
 
 	public int getId() {
@@ -243,6 +246,12 @@ public class Client {
 
 	public void setBaja(boolean baja) {
 		this.baja = baja;
+	}
+	
+	@Override
+	public String toString() {
+		return "Client [id=" + id + ", clientName=" + clientName + ", " +
+				"apellido1=" + apellido1 + "]";
 	}
 
 }

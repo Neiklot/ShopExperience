@@ -506,6 +506,8 @@
 	}
 </script>
 <script>
+var cliente_id="";
+
 function searchCustomer(){
 	var text=document.getElementById("barcodes").value;
 	 //var clientName=$.get("/shopExperience/searchClientByBarcode",{barcode:text});
@@ -513,16 +515,39 @@ $.ajax(
     {
         type: "GET",
         url:"/shopExperience/searchClientByBarcode"+"?barcode="+text,
-        dataType:"XMLHttpRequest",
+        dataType:"json",
         success: function(result) {
-        	document.getElementById("findClient").value=result;
+        	var json_x = result;
+        	document.getElementById("findClient").value=" "+json_x.clientName+" "+json_x.apellido1+" DNI: "+json_x.nif;
+        	cliente_id=json_x.id;
         },
         error: function(x, e) {
-        	document.getElementById("findClient").value="Cliente no encontrado";
+        	document.getElementById("findClient").value="Error de búsqueda";
         }
         });
 	       
 }
+function compra(){
+	var cliente=document.getElementById("barcodes").value;
+	var importe=document.getElementById("Importe").value;
+	
+	$.ajax(
+		    {
+		        type: "GET",
+		        url:"/shopExperience/addCompra"+"?client_id="+cliente_id+"&importe="+importe,
+		        dataType:"XMLHttpRequest",
+		        success: function(result) {
+		        	alert("Compra anotada al cliente:"+cliente_id+" de un importe de: "+importe);
+		        },
+		        error: function(x, e) {
+		        	alert("Error al añadir compra");
+		        }
+		        });
+	
+	reset();
+	resetImporte();
+}
+
 function reset(){
 	document.getElementById("barcodes").value="";
 	document.getElementById("findClient").value="";
@@ -552,13 +577,16 @@ function resetImporte(){
 					<tr>
 						<td>Introduzca Compra: </td></tr><tr><td><input oninput="searchCustomer()" onclick="reset()"
 							type="text" class="inputs" placeholder="Introduzca Código de barras o Nombre y Apellidos" id="barcodes"/>
-							<output style="font-family: Georgia, serif; color: #4E443C; font-variant: small-caps; size: 50px; text-transform: none; font-weight: 100; margin-bottom: 0;"" id="findClient"></output>
-							 <br> <input
+							</td><td><output style="font-family: Georgia, serif; color: #4E443C; font-variant: small-caps; size: 50px; text-transform: none; font-weight: 100; margin-bottom: 0;"" id="findClient"></output>
+							 </tr><tr><td> <input
 							type="number" class="inputs" placeholder="Importe"  id="Importe" onclick="resetImporte()"/>
 						</td>
-					</tr>
-				</table>
-
+					
+				<td style=''><a
+				onClick='compra();' title='compra' class='boton'
+				style='background: url("/shopExperience/resources/css/images/barcodes.png") no-repeat center center, cornflowerblue;'
+				href="<c:url value="#" />"> <span></span></a></td></tr>
+</table>
 
 			</div>
 			<div>

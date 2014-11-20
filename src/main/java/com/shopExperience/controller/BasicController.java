@@ -1,5 +1,6 @@
 package com.shopExperience.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,10 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -201,7 +206,7 @@ public class BasicController {
 
 	@RequestMapping(value = "/searchClientByBarcode", method = RequestMethod.GET)
 	@ResponseBody
-	public String searchClientByBarCode(@RequestParam("barcode") String barcode) {
+	public String searchClientByBarCode(@RequestParam("barcode") String barcode) throws JsonGenerationException, JsonMappingException, IOException {
 		Client clientFound = new Client();
 		clientFound.setClientName("Usuario no encontrado");
 		// FIXME:EAN13 UPC_A reading error
@@ -229,7 +234,9 @@ public class BasicController {
 			}
 
 		}
-		return clientFound.getClientName();
+		ObjectMapper mapper = new ObjectMapper();
+		System.out.println(mapper.writeValueAsString(clientFound));
+		return mapper.writeValueAsString(clientFound);
 	}
 
 	
