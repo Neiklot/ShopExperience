@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
+import com.shopExperience.entities.User;
 import com.shopExperience.pagination.GridUtils;
 import com.shopExperience.pagination.JqGridData;
 import com.shopExperience.pagination.ModelTableClient;
@@ -29,16 +30,16 @@ import com.shopExperience.utils.JqgridObjectMapper;
 @Controller
 @RequestMapping("/")
 public class ClientController {
-	
+
 	private EntityManager entityManager;
 
 	List<ModelTableClient> clientsModel;
-	
+
 	@PersistenceContext
 	public void setEntityManager(EntityManager em) {
 		this.entityManager = em;
 	}
-	
+
 	@RequestMapping(value = "getClients", method = RequestMethod.GET)
 	@ResponseBody
 	public JqGridData<ModelTableClient> getClients(
@@ -108,7 +109,7 @@ public class ClientController {
 
 		return gridData;
 	}
-	
+
 	public TypedQuery<Client> createFilter(TypedQuery<Client> query,
 			CriteriaBuilder cb, CriteriaQuery<Client> cq, Root<Client> from,
 			String filters) {
@@ -160,7 +161,6 @@ public class ClientController {
 			cq.where(cb.and(predicates.toArray(new Predicate[] {})));
 		}
 	}
-	
 
 	@RequestMapping(value = "/addClient", method = RequestMethod.POST)
 	@Transactional
@@ -168,8 +168,7 @@ public class ClientController {
 			@RequestParam("password") String password,
 			@RequestParam("card") String card,
 			@RequestParam("card_points") String points,
-			@RequestParam("tipo") int tipo,
-			@RequestParam("NIF") String NIF,
+			@RequestParam("tipo") int tipo, @RequestParam("NIF") String NIF,
 			@RequestParam("apellido1") String apellido1,
 			@RequestParam("apellido2") String apellido2,
 			@RequestParam("subNombre") String subnombre,
@@ -202,17 +201,22 @@ public class ClientController {
 		client.setSubnomebre(subnombre);
 		client.setTelefono(telefono);
 		client.setTipo(tipo);
-		
+
+		User user = new User();
+		user.setUserName(subnombre);
+		user.setPassword(password);
+		user.setTipe(3);
 
 		try {
 			entityManager.persist(client);
+			entityManager.persist(user);
 			entityManager.flush();
 		} catch (Exception e) {
 			System.out.println(e.toString());
 		}
 		return "RegistrationSuccess";
 	}
-	
+
 	public Client searchClientById(int clientId) {
 		Client client = new Client();
 		StringBuilder queryS = new StringBuilder();
@@ -224,7 +228,7 @@ public class ClientController {
 		client = query.getSingleResult();
 		return client;
 	}
-	
+
 	@RequestMapping(value = "/deleteClient", method = RequestMethod.POST)
 	@Transactional
 	public String deleteClient(@RequestParam("id") int clientId) {

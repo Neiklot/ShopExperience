@@ -13,7 +13,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.annotate.JsonIgnore;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.shopExperience.entities.Association;
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
+import com.shopExperience.entities.Compra;
 import com.shopExperience.entities.Shop;
 import com.shopExperience.entities.User;
 import com.shopExperience.pagination.GridUtils;
@@ -39,6 +39,7 @@ import com.shopExperience.pagination.ModelTableShop;
 import com.shopExperience.security.CustomUserDetails;
 import com.shopExperience.utils.JqgridFilter;
 import com.shopExperience.utils.JqgridObjectMapper;
+import com.shopExperience.utils.UserLogged;
 
 @Controller
 @RequestMapping("/")
@@ -57,11 +58,12 @@ public class BasicController {
 	}
 
 	@RequestMapping(value = "/index", method = RequestMethod.GET)
-	public String listClients(ModelMap model) {
+	public String createPages(ModelMap model) {
 		String indexType = "index";
 		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder
 				.getContext().getAuthentication().getPrincipal();
 		int userType = user.getType();
+		String userName = user.getUsername();
 
 		switch (userType) {
 		case 1:
@@ -100,10 +102,53 @@ public class BasicController {
 		case 2:
 			indexType = "indexShop";
 			break;
+		case 3:
+			indexType = "indexClient";
+			break;
 		}
 		return indexType;
 	}
 
+	@RequestMapping(value = "/getUserLogged", method = RequestMethod.GET)
+	@ResponseBody
+	public String getUserLogged() throws JsonGenerationException, JsonMappingException, IOException{
+		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder
+				.getContext().getAuthentication().getPrincipal();
+		UserLogged userLogged=new UserLogged();
+		Client client=searchClientByUserAndPassword(user.getUsername(),user.getPassword());
+		userLogged.setClient(client);
+		userLogged.setCompras(getComprasClient(client.getId()));
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(userLogged);
+	}
+	
+
+	public Client searchClientByUserAndPassword(String userName, String password) {
+		Client client = new Client();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select cl from Client cl where cl.subnombre = :userName and cl.password=:password");
+
+		TypedQuery<Client> query = entityManager.createQuery(queryS.toString(),
+				Client.class);
+		query.setParameter("userName", userName);
+		query.setParameter("password", password);
+		client = query.getSingleResult();
+		return client;
+	}
+	
+	public List<Compra> getComprasClient(int clientId){
+		List<Compra> compras=new ArrayList<>();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select co from Compra co where co.client.id = :clientId");
+
+		TypedQuery<Compra> query = entityManager.createQuery(queryS.toString(),
+				Compra.class);
+		query.setParameter("clientId", clientId);
+		compras= query.getResultList();
+		return compras;
+		
+	}
+	
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(ModelMap model) {
 		return "login";
@@ -235,7 +280,6 @@ public class BasicController {
 
 		}
 		ObjectMapper mapper = new ObjectMapper();
-		System.out.println(mapper.writeValueAsString(clientFound));
 		return mapper.writeValueAsString(clientFound);
 	}
 
