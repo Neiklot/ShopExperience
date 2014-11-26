@@ -13,6 +13,50 @@ button {
 	border: solid 1px;
 }
 
+.btn {
+    -moz-user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.42857;
+    margin-bottom: 0;
+    padding: 6px 12px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn.active.focus {
+    outline: thin dotted;
+    outline-offset: -2px;
+}
+.btn:hover, .btn:focus, .btn.focus {
+    color: #333;
+    text-decoration: none;
+}
+.btn:active, .btn.active {
+    background-image: none;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
+    outline: 0 none;
+}
+.btn.disabled, .btn[disabled], fieldset[disabled] .btn {
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.65;
+    pointer-events: none;
+}
+
+.btn-primary {
+	margin-left:20px;
+	margin-top:10px;
+    background-color: #6495ED;
+    border-color: #2e6da4;
+    color: #fff;
+}
+
 a {
 	text-decoration: none;
 	margin-top: 25px;
@@ -28,9 +72,9 @@ a img {
 }
 
 .boton {
-	background-size: 60%; /* Tamaño de la imagen */
-	height: 50px; /* Alto del botón */
-	width: 50px; /* Ancho del botón */
+	background-size: 60%; /* Tamaï¿½o de la imagen */
+	height: 50px; /* Alto del botï¿½n */
+	width: 50px; /* Ancho del botï¿½n */
 	display: table;
 	border-radius: 100%;
 	cursor: pointer;
@@ -45,7 +89,7 @@ a img {
 /* Al presionar */
 .boton:active {
 	box-shadow: inset 0 5px 30px rgba(0, 0, 0, .2); /* Sombra interior */
-	background-size: 55%; /* Cambiamos el tamaño de la imagen */
+	background-size: 55%; /* Cambiamos el tamaï¿½o de la imagen */
 	border-radius: 100%;
 }
 
@@ -64,7 +108,6 @@ a img {
 }
 
 input {
-	background-image: url("images/inputBackgroundImage.png");
 	background-position: 1px 1px;
 	background-repeat: no-repeat;
 	border: solid 1px #BED6F8;

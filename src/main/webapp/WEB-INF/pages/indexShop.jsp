@@ -506,68 +506,68 @@
 	}
 </script>
 <script>
-var cliente_id="";
+	var cliente_id = "";
 
-function searchCustomer(){
-	var text=document.getElementById("barcodes").value;
-	 //var clientName=$.get("/shopExperience/searchClientByBarcode",{barcode:text});
-$.ajax(
-    {
-        type: "GET",
-        url:"/shopExperience/searchClientByBarcode"+"?barcode="+text,
-        dataType:"json",
-        success: function(result) {
-        	var json_x = result;
-        	document.getElementById("findClient").value=" "+json_x.clientName+" "+json_x.apellido1+" DNI: "+json_x.nif;
-        	cliente_id=json_x.id;
-        },
-        error: function(x, e) {
-        	document.getElementById("findClient").value="Error de búsqueda";
-        }
-        });
-	       
-}
-function compra(){
-	var cliente=document.getElementById("barcodes").value;
-	var importe=document.getElementById("Importe").value;
-	
-	$.ajax(
-		    {
-		        type: "GET",
-		        url:"/shopExperience/addCompra"+"?client_id="+cliente_id+"&importe="+importe,
-		        dataType:"XMLHttpRequest",
-		        success: function(result) {
-		        	alert("Compra anotada al cliente:"+cliente_id+" de un importe de: "+importe);
-		        },
-		        error: function(x, e) {
-		        	alert("Error al añadir compra");
-		        }
-		        });
-	
-	reset();
-	resetImporte();
-}
+	function searchCustomer() {
+		var text = document.getElementById("barcodes").value;
+		//var clientName=$.get("/shopExperience/searchClientByBarcode",{barcode:text});
+		$
+				.ajax({
+					type : "GET",
+					url : "/shopExperience/searchClientByBarcode" + "?barcode="
+							+ text,
+					dataType : "json",
+					success : function(result) {
+						var json_x = result;
+						document.getElementById("findClient").value = " "
+								+ json_x.clientName + " " + json_x.apellido1
+								+ " DNI: " + json_x.nif;
+						cliente_id = json_x.id;
+					},
+					error : function(x, e) {
+						document.getElementById("findClient").value = "Error de búsqueda";
+					}
+				});
 
-function reset(){
-	document.getElementById("barcodes").value="";
-	document.getElementById("findClient").value="";
-}
-function resetImporte(){
-	document.getElementById("Importe").value="";
-}
+	}
+	function compra() {
+		var cliente = document.getElementById("barcodes").value;
+		var importe = document.getElementById("Importe").value;
+
+		$.ajax({
+			type : "GET",
+			url : "/shopExperience/addCompra" + "?client_id=" + cliente_id
+					+ "&importe=" + importe,
+			dataType : "XMLHttpRequest",
+			success : function(result) {
+				alert("Compra anotada al cliente:" + cliente_id
+						+ " de un importe de: " + importe);
+			},
+			error : function(x, e) {
+				alert("Error al añadir compra");
+			}
+		});
+
+		reset();
+		resetImporte();
+	}
+
+	function reset() {
+		document.getElementById("barcodes").value = "";
+		document.getElementById("findClient").value = "";
+	}
+	function resetImporte() {
+		document.getElementById("Importe").value = "";
+	}
 </script>
 </head>
 <body>
 	<div class="bodyPage">
 		<div class="buttons">
-			<td style='margin-top: 10px; padding: 45px;'><a
-				onClick='setupGrid();' title='New Shop' class='boton'
-				style='background: url("/shopExperience/resources/css/images/clients.png") no-repeat center center, cornflowerblue;'
-				href="<c:url value="#" />"> <span></span></a></td>
-			<td style='margin-top: 10px; padding: 45px;'><a
-				onClick='setupGridCards();' title='New Shop' class='boton'
-				style='background: url("/shopExperience/resources/css/images/barcodes.png") no-repeat center center, cornflowerblue;'
-				href="<c:url value="#" />"> <span></span></a></td>
+			<button onClick='setupGrid();' class='btn btn-primary'
+				style='width: 120px; height: 50px; margin-top: 10px;'>Clientes</button>
+			<button onClick='setupGridCards();' class='btn btn-primary'
+				style='width: 120px; height: 50px; margin-top: 10px;'>Tarjetas</button>
 
 		</div>
 		<div class="centreDiv" style="margin-left: 3%; overflow: auto;">
@@ -575,18 +575,29 @@ function resetImporte(){
 				<table
 					style="align: center; padding: 40px 40px 40px 40px; font-family: Georgia, serif; color: #4E443C; font-variant: small-caps; size: 50px; text-transform: none; font-weight: 100; margin-bottom: 0;">
 					<tr>
-						<td>Introduzca Compra: </td></tr><tr><td><input oninput="searchCustomer()" onclick="reset()"
-							type="text" class="inputs" placeholder="Introduzca Código de barras o Nombre y Apellidos" id="barcodes"/>
-							</td><td><output style="font-family: Georgia, serif; color: #4E443C; font-variant: small-caps; size: 50px; text-transform: none; font-weight: 100; margin-bottom: 0;"" id="findClient"></output>
-							 </tr><tr><td> <input
-							type="number" class="inputs" placeholder="Importe"  id="Importe" onclick="resetImporte()"/>
+						<td>Introduzca Compra:</td>
+					</tr>
+					<tr>
+						<td><input oninput="searchCustomer()" onclick="reset()"
+							type="text" class="inputs"
+							placeholder="Introduzca Código de barras o Nombre y Apellidos"
+							id="barcodes" /></td>
+						<td><output
+								style="font-family: Georgia, serif; color: #4E443C; font-variant: small-caps; size: 50px; text-transform: none; font-weight: 100; margin-bottom: 0;"
+								" id="findClient"></output>
+					</tr>
+					<tr>
+						<td><input type="number" class="inputs" placeholder="Importe"
+							id="Importe" onclick="resetImporte()" /></td>
+
+
+						<td style=''>
+							<button onClick='compra();' class='btn btn-primary'
+								style='width: 150px; height: 50px; margin-top: 10px;'>Guardar
+								Compra</button>
 						</td>
-					
-				<td style=''><a
-				onClick='compra();' title='compra' class='boton'
-				style='background: url("/shopExperience/resources/css/images/barcodes.png") no-repeat center center, cornflowerblue;'
-				href="<c:url value="#" />"> <span></span></a></td></tr>
-</table>
+					</tr>
+				</table>
 
 			</div>
 			<div>
@@ -610,41 +621,41 @@ function resetImporte(){
 </body>
 <%@ include file="footer.jsp"%>
 
-         
-<style> 
- .inputs {
-    -webkit-border-radius: 3px;
-    -moz-border-radius: 3px;
-    -ms-border-radius: 3px;
-    -o-border-radius: 3px;
-    border-radius: 3px;
-    -webkit-box-shadow: 0 1px 0 #FFF, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
-    -moz-box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
-    -ms-box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
-    -o-box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
-    box-shadow: 0 1px 0 #FFF, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
-    -webkit-transition: all 0.5s ease;
-    -moz-transition: all 0.5s ease;
-    -ms-transition: all 0.5s ease;
-    -o-transition: all 0.5s ease;
-    transition: all 0.5s ease;
-    background: #EAE7E7;
-    border: 1px solid #BED6F8;
-    color: #777;
-    font: 13px Helvetica, Arial, sans-serif;
-    margin: 0 0 10px;
-    padding: 15px 10px 15px 40px;
-    width: 400px;
+
+<style>
+.inputs {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 1px 0 #FFF, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
+	-moz-box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
+	-ms-box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
+	-o-box-shadow: 0 1px 0 #fff, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
+	box-shadow: 0 1px 0 #FFF, 0 -2px 5px rgba(0, 0, 0, 0.08) inset;
+	-webkit-transition: all 0.5s ease;
+	-moz-transition: all 0.5s ease;
+	-ms-transition: all 0.5s ease;
+	-o-transition: all 0.5s ease;
+	transition: all 0.5s ease;
+	background: #EAE7E7;
+	border: 1px solid #BED6F8;
+	color: #777;
+	font: 13px Helvetica, Arial, sans-serif;
+	margin: 0 0 10px;
+	padding: 15px 10px 15px 40px;
+	width: 400px;
 }
 
 .inputs:focus {
-    -webkit-box-shadow: 0 0 2px #BED6F8 inset;
-    -moz-box-shadow: 0 0 2px #ed1c24 inset;
-    -ms-box-shadow: 0 0 2px #ed1c24 inset;
-    -o-box-shadow: 0 0 2px #ed1c24 inset;
-    box-shadow: 0 0 2px #BED6F8 inset;
-    background-color: #FFF;
-    border: 1px solid #BED6F8;
-    outline: none;
+	-webkit-box-shadow: 0 0 2px #BED6F8 inset;
+	-moz-box-shadow: 0 0 2px #ed1c24 inset;
+	-ms-box-shadow: 0 0 2px #ed1c24 inset;
+	-o-box-shadow: 0 0 2px #ed1c24 inset;
+	box-shadow: 0 0 2px #BED6F8 inset;
+	background-color: #FFF;
+	border: 1px solid #BED6F8;
+	outline: none;
 }
-</style> 
+</style>

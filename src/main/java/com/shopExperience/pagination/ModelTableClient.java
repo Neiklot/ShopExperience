@@ -9,7 +9,7 @@ public class ModelTableClient {
 	private String card;
 	private int card_points;
 	private int tipo;
-	private String NIF;
+	private String nif;
 	private String apellido1;
 	private String apellido2;
 	private String subnombre;
@@ -61,11 +61,11 @@ public class ModelTableClient {
 	public void setTipo(int tipo) {
 		this.tipo = tipo;
 	}
-	public String getNIF() {
-		return NIF;
+	public String getNif() {
+		return nif;
 	}
-	public void setNIF(String nIF) {
-		NIF = nIF;
+	public void setNIF(String nif) {
+		this.nif = nif;
 	}
 	public String getApellido1() {
 		return apellido1;

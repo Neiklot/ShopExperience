@@ -36,11 +36,9 @@
 						<td><input type='password' name='j_password' /></td>
 					</tr>
 					<tr>
-						<td colspan='2'><input name="submit" type="submit"
-							value="submit" /></td>
-					</tr>
-					<tr>
-						<td colspan='2'><input name="reset" type="reset" /></td>
+						<td ><button style='width:120px;height:50px;' class='btn btn-primary' name="submit" type="submit"
+							value="submit" >Aceptar</button></td>
+						<td><button style='width:120px;height:50px;' class='btn btn-primary' name="reset" type="reset" >Borrar</button></td>
 					</tr>
 				</table>
 			</form>

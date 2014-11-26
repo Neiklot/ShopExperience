@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,6 +48,15 @@ public class BasicController {
 
 	private EntityManager entityManager;
 
+	@Autowired
+	ClientController cc;
+	
+	@Autowired
+	AssociationController ac;
+
+	@Autowired
+	ShopController sc;
+	
 	List<ModelTableClient> clientsModel;
 	List<ModelTableShop> shopsModel;
 	List<ModelTableAssociation> associationsModel;
@@ -67,36 +77,28 @@ public class BasicController {
 
 		switch (userType) {
 		case 1:
-			shopsModel = new ArrayList<ModelTableShop>();
-			associationsModel = new ArrayList<ModelTableAssociation>();
-
-			List<Shop> shops = new ArrayList<Shop>();
-			List<Association> associations = new ArrayList<Association>();
-
-			TypedQuery<Shop> queryShops = entityManager.createNamedQuery(
-					"Shop.findAll", Shop.class);
-			shops = queryShops.getResultList();
-
-			TypedQuery<Association> queryAssociation = entityManager
-					.createNamedQuery("Association.findAll", Association.class);
-			associations = queryAssociation.getResultList();
-			int numProducts = 0,
-			numCard = 0;
-
-			// Table associations
-			for (Association association : associations) {
-				ModelTableAssociation mTableAssociation = new ModelTableAssociation();
-				mTableAssociation.setAssociationId(association.getId());
-				mTableAssociation.setAssociationName(association.getName());
-				associationsModel.add(mTableAssociation);
-			}
-			// Table shops
-			for (Shop shop : shops) {
-				ModelTableShop mTableShop = new ModelTableShop();
-				mTableShop.setShopId(shop.getId());
-				mTableShop.setShopName(shop.getName());
-				shopsModel.add(mTableShop);
-			}
+//			shopsModel = new ArrayList<ModelTableShop>();
+//			associationsModel = new ArrayList<ModelTableAssociation>();
+//
+//			List<Shop> shops = new ArrayList<Shop>();
+//			List<Association> associations = new ArrayList<Association>();
+//
+//		
+//			shops=sc.getAllShops();
+//			associations = ac.getAllAssociations();
+//
+//			for (Association association : associations) {
+//				ModelTableAssociation mTableAssociation = new ModelTableAssociation();
+//				mTableAssociation.setAssociationId(association.getId());
+//				mTableAssociation.setAssociationName(association.getName());
+//				associationsModel.add(mTableAssociation);
+//			}
+//			for (Shop shop : shops) {
+//				ModelTableShop mTableShop = new ModelTableShop();
+//				mTableShop.setShopId(shop.getId());
+//				mTableShop.setShopName(shop.getName());
+//				shopsModel.add(mTableShop);
+//			}
 			indexType = "index";
 			break;
 		case 2:
@@ -111,44 +113,32 @@ public class BasicController {
 
 	@RequestMapping(value = "/getUserLogged", method = RequestMethod.GET)
 	@ResponseBody
-	public String getUserLogged() throws JsonGenerationException, JsonMappingException, IOException{
+	public String getUserLogged() throws JsonGenerationException,
+			JsonMappingException, IOException {
 		CustomUserDetails user = (CustomUserDetails) SecurityContextHolder
 				.getContext().getAuthentication().getPrincipal();
-		UserLogged userLogged=new UserLogged();
-		Client client=searchClientByUserAndPassword(user.getUsername(),user.getPassword());
+		UserLogged userLogged = new UserLogged();
+		Client client = cc.searchClientByUserAndPassword(user.getUsername(),
+				user.getPassword());
 		userLogged.setClient(client);
 		userLogged.setCompras(getComprasClient(client.getId()));
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(userLogged);
 	}
-	
 
-	public Client searchClientByUserAndPassword(String userName, String password) {
-		Client client = new Client();
-		StringBuilder queryS = new StringBuilder();
-		queryS.append("Select cl from Client cl where cl.subnombre = :userName and cl.password=:password");
-
-		TypedQuery<Client> query = entityManager.createQuery(queryS.toString(),
-				Client.class);
-		query.setParameter("userName", userName);
-		query.setParameter("password", password);
-		client = query.getSingleResult();
-		return client;
-	}
-	
-	public List<Compra> getComprasClient(int clientId){
-		List<Compra> compras=new ArrayList<>();
+	public List<Compra> getComprasClient(int clientId) {
+		List<Compra> compras = new ArrayList<>();
 		StringBuilder queryS = new StringBuilder();
 		queryS.append("Select co from Compra co where co.client.id = :clientId");
 
 		TypedQuery<Compra> query = entityManager.createQuery(queryS.toString(),
 				Compra.class);
 		query.setParameter("clientId", clientId);
-		compras= query.getResultList();
+		compras = query.getResultList();
 		return compras;
-		
+
 	}
-	
+
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
 	public String login(ModelMap model) {
 		return "login";
@@ -169,23 +159,6 @@ public class BasicController {
 
 	}
 
-	@RequestMapping(value = "/addCard", method = RequestMethod.POST)
-	@Transactional
-	public String addCard(@RequestParam("barcode") String barcode,
-			@RequestParam("points") int points) {
-
-		Card card = new Card();
-		card.setBarcode(barcode);
-		card.setPoints(points);
-
-		try {
-			entityManager.persist(card);
-			entityManager.flush();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-		return "RegistrationSuccess";
-	}
 
 	@RequestMapping(value = "/getSelectableShops", method = RequestMethod.GET)
 	@ResponseBody
@@ -196,18 +169,6 @@ public class BasicController {
 		}
 		return barcodes;
 	}
-
-	// @RequestMapping(value = "/addCard", method = RequestMethod.GET)
-	// @Transactional
-	// public String addCard(Card card) {
-	// try {
-	// entityManager.persist(card);
-	// entityManager.flush();
-	// } catch (Exception e) {
-	// System.out.println(e.toString());
-	// }
-	// return "RegistrationSuccess";
-	// }
 
 	@RequestMapping(value = "/addUser", method = RequestMethod.GET)
 	@Transactional
@@ -227,12 +188,6 @@ public class BasicController {
 		return query.getResultList();
 	}
 
-	public List<Association> getAssociations() {
-		TypedQuery<Association> query = entityManager.createNamedQuery(
-				"Association.findAll", Association.class);
-		return query.getResultList();
-	}
-
 	public Card searchCardByBarCode(String barCode) {
 		// FIXME:EAN13 UPC_A reading error
 		if (barCode.length() < 13) {
@@ -248,42 +203,6 @@ public class BasicController {
 		}
 		return cardFound;
 	}
-
-	@RequestMapping(value = "/searchClientByBarcode", method = RequestMethod.GET)
-	@ResponseBody
-	public String searchClientByBarCode(@RequestParam("barcode") String barcode) throws JsonGenerationException, JsonMappingException, IOException {
-		Client clientFound = new Client();
-		clientFound.setClientName("Usuario no encontrado");
-		// FIXME:EAN13 UPC_A reading error
-		if (barcode.matches("[0-9]+")) {
-
-			if (barcode.length() < 13) {
-				barcode = "0" + barcode;
-			}
-
-			TypedQuery<Card> query = entityManager.createNamedQuery(
-					"Card.findAll", Card.class);
-
-			for (Card card : query.getResultList()) {
-				if (card.getBarcode().equals(barcode)) {
-					clientFound = card.getClient();
-				}
-			}
-		} else {
-			TypedQuery<Client> query = entityManager.createNamedQuery(
-					"Client.findAll", Client.class);
-			for (Client client : query.getResultList()) {
-				if (client.getClientName().equals(barcode)) {
-					clientFound = client;
-				}
-			}
-
-		}
-		ObjectMapper mapper = new ObjectMapper();
-		return mapper.writeValueAsString(clientFound);
-	}
-
-	
 
 	@RequestMapping(value = "getCards", method = RequestMethod.GET)
 	@ResponseBody
@@ -387,28 +306,5 @@ public class BasicController {
 		} else {
 			cq.where(cb.and(predicates.toArray(new Predicate[] {})));
 		}
-	}
-
-
-	@RequestMapping(value = "getShops", method = RequestMethod.GET)
-	@ResponseBody
-	public JqGridData<ModelTableShop> getShops(@RequestParam("page") int page,
-			@RequestParam("rows") int rows,
-			@RequestParam("sidx") String sortColumnId,
-			@RequestParam("sord") String sortDirection) {
-
-		int totalNumberOfPages = GridUtils.getTotalNumberOfPages(shopsModel,
-				rows);
-		int currentPageNumber = GridUtils.getCurrentPageNumber(shopsModel,
-				page, rows);
-		int totalNumberOfRecords = shopsModel.size();
-		List<ModelTableShop> pageData = GridUtils.getDataForPage(shopsModel,
-				page, rows);
-
-		JqGridData<ModelTableShop> gridData = new JqGridData<ModelTableShop>(
-				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
-				pageData);
-
-		return gridData;
 	}
 }

@@ -27,6 +27,9 @@ public class RegistrationController {
 
 	@Autowired
 	BasicController bc;
+	
+	@Autowired
+	AssociationController ac;
 
 	public String generateBarCode() throws IOException, BarcodeException,
 			SAXException {
@@ -88,8 +91,8 @@ public class RegistrationController {
 			Map<String, Object> model) throws IOException, BarcodeException,
 			SAXException {
 		Association association=new Association();
-		if (bc.getAssociations() != null && bc.getAssociations().size() > 0) {
-			association=bc.getAssociations().iterator().next();
+		if (ac.getAllAssociations() != null && ac.getAllAssociations().size() > 0) {
+			association=ac.getAllAssociations().iterator().next();
 		}
 		Card card = new Card();
 		String barcodeNr = generateBarCode();

@@ -1,5 +1,6 @@
 package com.shopExperience.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,9 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,6 +76,7 @@ public class ClientController {
 			ModelTableClient mTableClient = new ModelTableClient();
 			mTableClient.setClientId(client.getId());
 			mTableClient.setClientName(client.getClientName());
+			mTableClient.setPassword(client.getPassword());
 			mTableClient.setApellido1(client.getApellido1());
 			mTableClient.setApellido2(client.getApellido2());
 			mTableClient.setBaja(client.getBaja());
@@ -201,6 +206,7 @@ public class ClientController {
 		client.setSubnomebre(subnombre);
 		client.setTelefono(telefono);
 		client.setTipo(tipo);
+		client.setCards(getCardToClient(card));
 
 		User user = new User();
 		user.setUserName(subnombre);
@@ -215,6 +221,23 @@ public class ClientController {
 			System.out.println(e.toString());
 		}
 		return "RegistrationSuccess";
+	}
+
+	public List<Card> getCardToClient(String barcode) {
+		List<Card> cards = new ArrayList<>();
+		Card card = new Card();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select ca from Card ca where ca.barcode = :barcode");
+
+		TypedQuery<Card> query = entityManager.createQuery(queryS.toString(),
+				Card.class);
+		query.setParameter("barcode", barcode);
+		card = query.getSingleResult();
+		if (card.getClient() == null) {
+			cards.add(card);
+		}
+
+		return cards;
 	}
 
 	public Client searchClientById(int clientId) {
@@ -243,4 +266,51 @@ public class ClientController {
 		return "RegistrationSuccess";
 	}
 
+	public Client searchClientByUserAndPassword(String userName, String password) {
+		Client client = new Client();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select cl from Client cl where cl.subnombre = :userName and cl.password=:password");
+
+		TypedQuery<Client> query = entityManager.createQuery(queryS.toString(),
+				Client.class);
+		query.setParameter("userName", userName);
+		query.setParameter("password", password);
+		client = query.getSingleResult();
+		return client;
+	}
+
+	@RequestMapping(value = "/searchClientByBarcode", method = RequestMethod.GET)
+	@ResponseBody
+	public String searchClientByBarCode(@RequestParam("barcode") String barcode)
+			throws JsonGenerationException, JsonMappingException, IOException {
+		Client clientFound = new Client();
+		clientFound.setClientName("Usuario no encontrado");
+		// FIXME:EAN13 UPC_A reading error
+		if (barcode.matches("[0-9]+")) {
+
+			if (barcode.length() < 13) {
+				barcode = "0" + barcode;
+			}
+
+			TypedQuery<Card> query = entityManager.createNamedQuery(
+					"Card.findAll", Card.class);
+
+			for (Card card : query.getResultList()) {
+				if (card.getBarcode().equals(barcode)) {
+					clientFound = card.getClient();
+				}
+			}
+		} else {
+			TypedQuery<Client> query = entityManager.createNamedQuery(
+					"Client.findAll", Client.class);
+			for (Client client : query.getResultList()) {
+				if (client.getClientName().equals(barcode)) {
+					clientFound = client;
+				}
+			}
+
+		}
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(clientFound);
+	}
 }
