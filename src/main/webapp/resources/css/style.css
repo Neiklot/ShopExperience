@@ -11,50 +11,58 @@ body {
 
 button {
 	border: solid 1px;
+
 }
 
 .btn {
-    -moz-user-select: none;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    cursor: pointer;
-    display: inline-block;
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.42857;
-    margin-bottom: 0;
-    padding: 6px 12px;
-    text-align: center;
-    vertical-align: middle;
-    white-space: nowrap;
+	-moz-user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 4px;
+	cursor: pointer;
+	display: inline-block;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 1.42857;
+	margin-bottom: 0;
+	padding: 6px 12px;
+	text-align: center;
+	vertical-align: middle;
+	white-space: nowrap;
+		border-radius: 9px;
+	box-shadow: 0 2px 2.5px rgba(0, 0, 0, 0.5);
 }
-.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active, .btn.active.focus {
-    outline: thin dotted;
-    outline-offset: -2px;
+
+.btn:focus, .btn:active:focus, .btn.active:focus, .btn.focus, .btn.focus:active,
+	.btn.active.focus {
+	outline: thin dotted;
+	outline-offset: -2px;
 }
+
 .btn:hover, .btn:focus, .btn.focus {
-    color: #333;
-    text-decoration: none;
+	color: #333;
+	text-decoration: none;
 }
+
 .btn:active, .btn.active {
-    background-image: none;
-    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
-    outline: 0 none;
+	background-image: none;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
+	outline: 0 none;
 }
+
 .btn.disabled, .btn[disabled], fieldset[disabled] .btn {
-    box-shadow: none;
-    cursor: not-allowed;
-    opacity: 0.65;
-    pointer-events: none;
+	box-shadow: none;
+	cursor: not-allowed;
+	opacity: 0.65;
+	pointer-events: none;
 }
 
 .btn-primary {
-	margin-left:20px;
-	margin-top:10px;
-    background-color: #6495ED;
-    border-color: #2e6da4;
-    color: #fff;
+	margin-left: 20px;
+	margin-top: 10px;
+	background-color: #6495ED;
+	border-color: #2e6da4;
+	color: #fff;
 }
 
 a {
@@ -138,7 +146,12 @@ div.centreDiv {
 	width: 85%;
 	height: 500px;
 	margin: auto;
-	float: left
+	float: left;
+	background-color: #FFFFFF;
+	border-radius: 9px;
+	box-shadow: 0 2px 2.5px rgba(0, 0, 0, 0.5);
+	text-align: center;
+	padding:10px;
 }
 
 div.buttons {
