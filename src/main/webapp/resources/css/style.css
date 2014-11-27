@@ -149,7 +149,7 @@ div.centreDiv {
 	float: left;
 	background-color: #FFFFFF;
 	border-radius: 9px;
-	box-shadow: 0 2px 2.5px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 2px 2.5px rgba(100, 149, 237, 0.5);
 	text-align: center;
 	padding:10px;
 }

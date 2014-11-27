@@ -29,6 +29,9 @@ public class RegistrationController {
 	BasicController bc;
 	
 	@Autowired
+	CardController cc;
+	
+	@Autowired
 	AssociationController ac;
 
 	public String generateBarCode() throws IOException, BarcodeException,
@@ -52,8 +55,8 @@ public class RegistrationController {
 
 	public String generateCode() {
 		int lastCode = 0;
-		if (bc.getCards() != null && bc.getCards().size() > 0) {
-			String lastBarCode=bc.getCards().get(bc.getCards().size() - 1)
+		if (cc.getAllCards() != null && cc.getAllCards().size() > 0) {
+			String lastBarCode=cc.getAllCards().get(cc.getAllCards().size() - 1)
 					.getBarcode();
 			lastCode=Integer.parseInt(lastBarCode.substring(0, 12));
 			lastCode++;

@@ -1,7 +1,5 @@
 <%@ include file="header.jsp"%>
-
 <head>
-<meta charset="utf-8">
 <title>ShopExperience Clientes y Productos</title>
 
 

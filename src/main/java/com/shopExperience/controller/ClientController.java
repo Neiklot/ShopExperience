@@ -15,6 +15,7 @@ import javax.persistence.criteria.Root;
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,12 @@ import com.shopExperience.utils.JqgridObjectMapper;
 public class ClientController {
 
 	private EntityManager entityManager;
+	
+	@Autowired
+	CompraController cc;
+	
+	@Autowired
+	AssociationController ac;
 
 	List<ModelTableClient> clientsModel;
 
@@ -96,7 +103,10 @@ public class ClientController {
 			if (client.getCards().size() > 0) {
 				Card card = client.getCards().get(0);
 				mTableClient.setCard("" + card.getId());
-			}
+			}		
+			mTableClient.setPuntos(cc.searchComprasByClient(client.getId()));
+//			mTableClient.setAssociation(ac.getAssociationByClientId(client.getId()).getName());
+			
 			clientsModel.add(mTableClient);
 		}
 

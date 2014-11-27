@@ -13,32 +13,45 @@
 							repeatitems : false,
 							id : "ref"
 						},
-						colNames : [ 'Id Tienda', 'Nombre de la Tienda' ],
-						colModel : [ {
-							name : 'shopId',
-							index : 'shopId',
-							width : 100
-						}, {
+						colNames : [ 'Nombre de la Tienda','Associación','Número de Clientes' ],
+						colModel : [  {
 							name : 'shopName',
 							index : 'shopName',
+							width : 200
+						}, {
+							name : 'association',
+							index : 'assciation',
 							width : 100
-						}, ],
-						rowNum : 5,
-						rowList : [ 5, 10, 20 ],
-						height : 165,
-						pager : "#pagingDivShops",
+						},
+						 {
+							name : 'clients',
+							index : 'clients',
+							width : 200
+						}],
+						postData : {},
+						rowNum : 10,
+						rowList : [ 10, 20, 40, 60 ],
+						height : 200,
+						width : 980,
+						shrinkToFit : false,
+						rownumbers : true,
+						pager : '#pagerCard',
+						sortname : 'id',
 						viewrecords : true,
-						hiddengrid : true,
-						caption : "Tiendas",
-						multipleGroup : true,
-						onSelectRow : function() {
-							var selr = jQuery('#dataTableShop').jqGrid(
-									'getGridParam', 'selrow');
-							if (selr)
-								popupwindow(selr);
-							else
-								alert("No selected row");
-							return false;
+						sortorder : "asc",
+						caption : "Tarjetas",
+						emptyrecords : "Ningún resultado",
+						loadonce : false,
+						loadComplete : function() {
+						},
+						jsonReader : {
+							root : "rows",
+							page : "page",
+							total : "total",
+							records : "records",
+							repeatitems : false,
+							cell : "cell",
+							id : "id"
 						}
 					});
 		}

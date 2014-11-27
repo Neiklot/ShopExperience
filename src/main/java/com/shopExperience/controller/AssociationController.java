@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.shopExperience.entities.Association;
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
+import com.shopExperience.entities.Shop;
 import com.shopExperience.pagination.GridUtils;
 import com.shopExperience.pagination.JqGridData;
 import com.shopExperience.pagination.ModelTableAssociation;
@@ -73,8 +74,8 @@ public class AssociationController {
 			ModelTableAssociation mTableAssociation = new ModelTableAssociation();
 			mTableAssociation.setAssociationId(association.getId());
 			mTableAssociation.setAssociationName(association.getName());
-			mTableAssociation.setnShops(0);
-			mTableAssociation.setnClients(0);
+			mTableAssociation.setnShops(association.getShops().size());
+			mTableAssociation.setnClients(association.getUsers().size());
 			associationsModel.add(mTableAssociation);
 		}
 
@@ -171,5 +172,17 @@ public class AssociationController {
 		}
 		return "RegistrationSuccess";
 	}
-	
+
+//	public Association getAssociationByClientId(int clientId){
+//		Association association=new Association();
+//		StringBuilder queryS = new StringBuilder();
+//		queryS.append("Select a from Association a where a.client.id = :clientId");
+//
+//		TypedQuery<Association> query = entityManager.createQuery(queryS.toString(),
+//				Association.class);
+//		query.setParameter("clientId", clientId);
+//		association= query.getSingleResult();
+//
+//		return association;
+//	}
 }

@@ -3,8 +3,9 @@ package com.shopExperience.pagination;
 public class ModelTableCard {
 	
 	private int cardId;
+	private String clientIdentification;
 	private String barcode;
-	private int points;
+	private long points;
 	
 	public int getCardId() {
 		return cardId;
@@ -15,13 +16,19 @@ public class ModelTableCard {
 	public String getBarcode() {
 		return barcode;
 	}
+	public String getClientIdentification() {
+		return clientIdentification;
+	}
+	public void setClientIdentification(String clientIdentification) {
+		this.clientIdentification = clientIdentification;
+	}
 	public void setBarcode(String barcode) {
 		this.barcode = barcode;
 	}
-	public int getPoints() {
+	public long getPoints() {
 		return points;
 	}
-	public void setPoints(int points) {
+	public void setPoints(long points) {
 		this.points = points;
 	}
 

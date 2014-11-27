@@ -298,8 +298,8 @@ function setupGrid() {
 												}
 											}
 										}, {
-											name : 'card_points',
-											index : 'card_points',
+											name : 'puntos',
+											index : 'puntos',
 											width : 100,
 											editable : true,
 											editrules : {
@@ -321,7 +321,7 @@ function setupGrid() {
 								viewrecords : true,
 								sortorder : "asc",
 								caption : "Clients",
-								emptyrecords : "Empty records",
+								emptyrecords : "Ningún resultado",
 								loadonce : false,
 								loadComplete : function() {
 								},

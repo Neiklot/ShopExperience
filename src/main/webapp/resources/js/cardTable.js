@@ -11,8 +11,13 @@
 					url : "/shopExperience/getCards",
 					datatype : 'json',
 					mtype : 'GET',
-					colNames : [ 'Barcode', 'Points' ],
-					colModel : [ {
+					colNames : [ 'Cliente','Barcode', 'Points' ],
+					colModel : [{
+						name : 'clientIdentification',
+						index : 'clientIdentification',
+						width : 250,
+						editable : false
+					}, {
 						name : 'barcode',
 						index : 'barcode',
 						width : 250,

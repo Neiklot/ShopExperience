@@ -53,7 +53,10 @@ public class BasicController {
 	
 	@Autowired
 	AssociationController ac;
-
+	
+	@Autowired
+	CardController cca;
+	
 	@Autowired
 	ShopController sc;
 	
@@ -77,28 +80,6 @@ public class BasicController {
 
 		switch (userType) {
 		case 1:
-//			shopsModel = new ArrayList<ModelTableShop>();
-//			associationsModel = new ArrayList<ModelTableAssociation>();
-//
-//			List<Shop> shops = new ArrayList<Shop>();
-//			List<Association> associations = new ArrayList<Association>();
-//
-//		
-//			shops=sc.getAllShops();
-//			associations = ac.getAllAssociations();
-//
-//			for (Association association : associations) {
-//				ModelTableAssociation mTableAssociation = new ModelTableAssociation();
-//				mTableAssociation.setAssociationId(association.getId());
-//				mTableAssociation.setAssociationName(association.getName());
-//				associationsModel.add(mTableAssociation);
-//			}
-//			for (Shop shop : shops) {
-//				ModelTableShop mTableShop = new ModelTableShop();
-//				mTableShop.setShopId(shop.getId());
-//				mTableShop.setShopName(shop.getName());
-//				shopsModel.add(mTableShop);
-//			}
 			indexType = "index";
 			break;
 		case 2:
@@ -159,12 +140,11 @@ public class BasicController {
 
 	}
 
-
 	@RequestMapping(value = "/getSelectableShops", method = RequestMethod.GET)
 	@ResponseBody
 	public List<String> getSelectableShops() {
 		List<String> barcodes = new ArrayList<String>();
-		for (Card card : this.getCards()) {
+		for (Card card : cca.getAllCards()) {
 			barcodes.add(card.getBarcode());
 		}
 		return barcodes;
@@ -182,12 +162,6 @@ public class BasicController {
 		return "RegistrationSuccess";
 	}
 
-	public List<Card> getCards() {
-		TypedQuery<Card> query = entityManager.createNamedQuery("Card.findAll",
-				Card.class);
-		return query.getResultList();
-	}
-
 	public Card searchCardByBarCode(String barCode) {
 		// FIXME:EAN13 UPC_A reading error
 		if (barCode.length() < 13) {
@@ -202,57 +176,6 @@ public class BasicController {
 			}
 		}
 		return cardFound;
-	}
-
-	@RequestMapping(value = "getCards", method = RequestMethod.GET)
-	@ResponseBody
-	public JqGridData<ModelTableCard> getCards(@RequestParam("page") int page,
-			@RequestParam("rows") int rows,
-			@RequestParam("sidx") String sortColumnId,
-			@RequestParam("sord") String sortDirection,
-			@RequestParam("_search") boolean search,
-			@RequestParam(value = "filters", required = false) String filters) {
-
-		List<Card> cards = new ArrayList<Card>();
-		cardsModel = new ArrayList<ModelTableCard>();
-		CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-
-		CriteriaQuery<Card> cq = cb.createQuery(Card.class);
-		Root<Card> from = cq.from(Card.class);
-		TypedQuery<Card> query;
-
-		cq.select(from);
-		cq.orderBy(cb.asc(from.get(sortColumnId)));
-		query = entityManager.createQuery(cq);
-
-		if (search) {
-			query = createFilterCard(query, cb, cq, from, filters);
-		}
-
-		cards = query.getResultList();
-
-		// Table clients
-		for (Card card : cards) {
-			ModelTableCard mTableCard = new ModelTableCard();
-			mTableCard.setCardId(card.getId());
-			mTableCard.setBarcode(card.getBarcode());
-			mTableCard.setPoints(card.getPoints());
-			cardsModel.add(mTableCard);
-		}
-
-		int totalNumberOfPages = GridUtils.getTotalNumberOfPages(cardsModel,
-				rows);
-		int currentPageNumber = GridUtils.getCurrentPageNumber(cardsModel,
-				page, rows);
-		int totalNumberOfRecords = cardsModel.size();
-		List<ModelTableCard> pageData = GridUtils.getDataForPage(cardsModel,
-				page, rows);
-
-		JqGridData<ModelTableCard> gridData = new JqGridData<ModelTableCard>(
-				totalNumberOfPages, currentPageNumber, totalNumberOfRecords,
-				pageData);
-
-		return gridData;
 	}
 
 	public TypedQuery<Card> createFilterCard(TypedQuery<Card> query,

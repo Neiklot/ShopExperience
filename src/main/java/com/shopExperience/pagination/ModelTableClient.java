@@ -23,6 +23,8 @@ public class ModelTableClient {
 	private String cuentaIban;
 	private String observaciones;
 	private boolean baja;	
+	private long puntos;
+	private String association;
 
 	public int getClientId() {
 		return clientId;
@@ -144,6 +146,18 @@ public class ModelTableClient {
 	}
 	public void setBaja(boolean baja) {
 		this.baja = baja;
+	}
+	public long getPuntos() {
+		return puntos;
+	}
+	public void setPuntos(long puntos) {
+		this.puntos = puntos;
+	}
+	public String getAssociation() {
+		return association;
+	}
+	public void setAssociation(String association) {
+		this.association = association;
 	}
 	
 }
