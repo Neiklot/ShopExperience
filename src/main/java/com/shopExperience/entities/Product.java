@@ -10,12 +10,17 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 @Entity(name = "Product")
 @NamedQueries({
@@ -35,9 +40,17 @@ public class Product {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "REG_DATE", nullable = true)
 	private Date reg_date;
-
-	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private List<Client> clients;
+	
+	@Column(name="IMAGE",nullable=true)
+	private String image_url;
+	
+    @ManyToOne 
+    @JoinColumn(name="shop_id")
+    @LazyCollection(LazyCollectionOption.FALSE) 
+	private Shop shop;
+    
+    @Column
+    private long value;
 
 	public int getId() {
 		return id;
@@ -71,12 +84,29 @@ public class Product {
 		this.reg_date = reg_date;
 	}
 
-	public List<Client> getClient() {
-		return clients;
+	public String getImage_url() {
+		return image_url;
 	}
 
-	public void setClient(List<Client> clients) {
-		this.clients = clients;
+	public void setImage_url(String image_url) {
+		this.image_url = image_url;
 	}
+
+	public Shop getShop() {
+		return shop;
+	}
+
+	public void setShop(Shop shop) {
+		this.shop = shop;
+	}
+
+	public long getValue() {
+		return value;
+	}
+
+	public void setValue(long value) {
+		this.value = value;
+	}
+
 
 }
