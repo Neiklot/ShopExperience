@@ -172,7 +172,7 @@ public class ShopController {
 	public Shop getShop(int shopId) {
 		Shop shop = new Shop();
 		StringBuilder queryS = new StringBuilder();
-		queryS.append("Select as from Shop as where as.id = :shopId");
+		queryS.append("Select sh from Shop sh where sh.id = :shopId");
 
 		TypedQuery<Shop> query = entityManager.createQuery(
 				queryS.toString(), Shop.class);

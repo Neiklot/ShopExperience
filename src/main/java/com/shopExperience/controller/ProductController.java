@@ -11,6 +11,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,13 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.shopExperience.entities.Product;
-import com.shopExperience.entities.Card;
-import com.shopExperience.entities.Client;
 import com.shopExperience.entities.Shop;
 import com.shopExperience.pagination.GridUtils;
 import com.shopExperience.pagination.JqGridData;
 import com.shopExperience.pagination.ModelTableProduct;
-import com.shopExperience.pagination.ModelTableClient;
 import com.shopExperience.utils.JqgridFilter;
 import com.shopExperience.utils.JqgridObjectMapper;
 
@@ -35,6 +33,9 @@ import com.shopExperience.utils.JqgridObjectMapper;
 public class ProductController {
 	
 	private EntityManager entityManager;
+	
+	@Autowired
+	ShopController cs;
 	
 	List<ModelTableProduct> productsModel;
 	
@@ -75,7 +76,7 @@ public class ProductController {
 			mTableProduct.setDescription(product.getDescription());
 			mTableProduct.setImage_url(product.getImage_url());
 			mTableProduct.setName(product.getName());
-			mTableProduct.setShopName(product.getShop().getName());
+//			mTableProduct.setShopName(product.getShop().getName());
 			mTableProduct.setValue(product.getValue());
 			productsModel.add(mTableProduct);
 		}
@@ -155,24 +156,31 @@ public class ProductController {
 		return query.getResultList();
 	}
 	
-//	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
-//	@Transactional
-//	public String addAssociation(@RequestParam("associationName") String associationName,
-//			@RequestParam("description") String description
-//			) {
-//
-//		Product association = new Product();
-//		association.setName(associationName);
-//		association.setDescription(description);
-//
-//		try {
-//			entityManager.persist(association);
-//			entityManager.flush();
-//		} catch (Exception e) {
-//			System.out.println(e.toString());
-//		}
-//		return "RegistrationSuccess";
-//	}
+	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
+	@Transactional
+	@ResponseBody
+	public String addProduct(@RequestParam("name") String productName,
+			@RequestParam("description") String description,
+			@RequestParam("value") long value,
+			@RequestParam("shop_name") int shopId
+			) {
+		
+//		Shop shop=cs.getShop(shopId);
+
+		Product product = new Product();
+		product.setName(productName);
+		product.setDescription(description);
+		product.setValue(value);
+//		product.setShop(shop);
+
+		try {
+			entityManager.persist(product);
+			entityManager.flush();
+		} catch (Exception e) {
+			System.out.println(e.toString());
+		}
+		return "RegistrationSuccess";
+	}
 
 //	public Association getAssociationByClientId(int clientId){
 //		Association association=new Association();
