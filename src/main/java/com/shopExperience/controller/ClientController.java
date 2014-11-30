@@ -100,11 +100,11 @@ public class ClientController {
 			mTableClient.setTelefono(client.getTelefono());
 			mTableClient.setTipo(client.getTipo());
 			mTableClient.setCard("" + client.getCards().size());
-			if (client.getCards().size() > 0) {
+			if (client.getCards().size() == 1) {
 				Card card = client.getCards().get(0);
-				mTableClient.setCard("" + card.getId());
+				mTableClient.setCard("" + card.getBarcode());
 			}		
-			mTableClient.setPuntos(cc.searchComprasByClient(client.getId()));
+			mTableClient.setPuntos(cc.searchSumComprasByClient(client.getId()));
 //			mTableClient.setAssociation(ac.getAssociationByClientId(client.getId()).getName());
 			
 			clientsModel.add(mTableClient);
@@ -182,11 +182,11 @@ public class ClientController {
 	public String addClient(@RequestParam("clientName") String clientName,
 			@RequestParam("password") String password,
 			@RequestParam("card") String card,
-			@RequestParam("card_points") String points,
-			@RequestParam("tipo") int tipo, @RequestParam("NIF") String NIF,
+			@RequestParam("puntos") String points,
+			@RequestParam("tipo") int tipo, @RequestParam("nif") String NIF,
 			@RequestParam("apellido1") String apellido1,
 			@RequestParam("apellido2") String apellido2,
-			@RequestParam("subNombre") String subnombre,
+			@RequestParam("subnombre") String subnombre,
 			@RequestParam("direccion") String direccion,
 			@RequestParam("codigoPostal") int codigoPostal,
 			@RequestParam("poblacion") String poblacion,

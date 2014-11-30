@@ -96,7 +96,7 @@ public class CardController {
 			mTableCard.setCardId(card.getId());
 			mTableCard.setBarcode(card.getBarcode());
 			Client client=card.getClient();
-			mTableCard.setPoints(cc.searchComprasByCard(client));	
+			mTableCard.setPoints(cc.searchComprasByCard(card.getId()));	
 			mTableCard.setClientIdentification(client.getClientName()+" "+client.getApellido1()+" "+client.getApellido2());
 			cardsModel.add(mTableCard);
 		}
@@ -176,5 +176,27 @@ public class CardController {
 		return query.getResultList();
 	}
 
+	public Card searchCardById(int cardId) {
+		Card card = new Card();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select ca from Card ca where ca.id = :cardId");
+
+		TypedQuery<Card> query = entityManager.createQuery(queryS.toString(),
+				Card.class);
+		query.setParameter("cardId", cardId);
+		card = query.getSingleResult();
+		return card;
+	}
 	
+	public List<Card> searchCardByClientId(int clientId) {
+		List<Card> cards = new ArrayList<>();
+		StringBuilder queryS = new StringBuilder();
+		queryS.append("Select ca from Card ca where ca.client.id = :clientId");
+
+		TypedQuery<Card> query = entityManager.createQuery(queryS.toString(),
+				Card.class);
+		query.setParameter("clientId", clientId);
+		cards = query.getResultList();
+		return cards;
+	}
 }

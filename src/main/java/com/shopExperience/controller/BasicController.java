@@ -22,17 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.shopExperience.entities.Association;
 import com.shopExperience.entities.Card;
 import com.shopExperience.entities.Client;
 import com.shopExperience.entities.Compra;
-import com.shopExperience.entities.Shop;
 import com.shopExperience.entities.User;
-import com.shopExperience.pagination.GridUtils;
-import com.shopExperience.pagination.JqGridData;
 import com.shopExperience.pagination.ModelTableAssociation;
 import com.shopExperience.pagination.ModelTableCard;
 import com.shopExperience.pagination.ModelTableClient;
@@ -59,6 +54,9 @@ public class BasicController {
 	
 	@Autowired
 	ShopController sc;
+	
+	@Autowired
+	CompraController co;
 	
 	List<ModelTableClient> clientsModel;
 	List<ModelTableShop> shopsModel;
@@ -108,15 +106,7 @@ public class BasicController {
 	}
 
 	public List<Compra> getComprasClient(int clientId) {
-		List<Compra> compras = new ArrayList<>();
-		StringBuilder queryS = new StringBuilder();
-		queryS.append("Select co from Compra co where co.client.id = :clientId");
-
-		TypedQuery<Compra> query = entityManager.createQuery(queryS.toString(),
-				Compra.class);
-		query.setParameter("clientId", clientId);
-		compras = query.getResultList();
-		return compras;
+		return co.searchComprasByClient(clientId);
 
 	}
 

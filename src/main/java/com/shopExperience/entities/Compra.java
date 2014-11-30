@@ -1,9 +1,7 @@
 package com.shopExperience.entities;
 
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -34,7 +32,7 @@ public class Compra {
 	private Date reg_date;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	private Client client;
+	private Card card;
 
 	public int getId() {
 		return id;
@@ -60,12 +58,12 @@ public class Compra {
 		this.reg_date = reg_date;
 	}
 
-	public Client getClient() {
-		return client;
+	public Card getClard() {
+		return card;
 	}
 
-	public void setClient(Client client) {
-		this.client = client;
+	public void setCard(Card card) {
+		this.card = card;
 	}
 
 }
