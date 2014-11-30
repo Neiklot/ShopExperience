@@ -70,12 +70,13 @@ public class ProductController {
 		products = query.getResultList();
 
 		// Table associations
-		for (Product association : products) {
+		for (Product product : products) {
 			ModelTableProduct mTableProduct = new ModelTableProduct();
-			mTableProduct.setAssociationId(association.getId());
-			mTableProduct.setAssociationName(association.getName());
-			mTableProduct.setnShops(association.getShops().size());
-			mTableProduct.setnClients(association.getUsers().size());
+			mTableProduct.setDescription(product.getDescription());
+			mTableProduct.setImage_url(product.getImage_url());
+			mTableProduct.setName(product.getName());
+			mTableProduct.setShopName(product.getShop().getName());
+			mTableProduct.setValue(product.getValue());
 			productsModel.add(mTableProduct);
 		}
 
@@ -148,30 +149,30 @@ public class ProductController {
 		}
 	}
 	
-	public List<Product> getAllAssociations(){
-		TypedQuery<Product> query = entityManager.createNamedQuery("Association.findAll",
+	public List<Product> getAllProducts(){
+		TypedQuery<Product> query = entityManager.createNamedQuery("Product.findAll",
 				Product.class);
 		return query.getResultList();
 	}
 	
-	@RequestMapping(value = "/addAssociation", method = RequestMethod.POST)
-	@Transactional
-	public String addAssociation(@RequestParam("associationName") String associationName,
-			@RequestParam("description") String description
-			) {
-
-		Product association = new Product();
-		association.setName(associationName);
-		association.setDescription(description);
-
-		try {
-			entityManager.persist(association);
-			entityManager.flush();
-		} catch (Exception e) {
-			System.out.println(e.toString());
-		}
-		return "RegistrationSuccess";
-	}
+//	@RequestMapping(value = "/addProduct", method = RequestMethod.POST)
+//	@Transactional
+//	public String addAssociation(@RequestParam("associationName") String associationName,
+//			@RequestParam("description") String description
+//			) {
+//
+//		Product association = new Product();
+//		association.setName(associationName);
+//		association.setDescription(description);
+//
+//		try {
+//			entityManager.persist(association);
+//			entityManager.flush();
+//		} catch (Exception e) {
+//			System.out.println(e.toString());
+//		}
+//		return "RegistrationSuccess";
+//	}
 
 //	public Association getAssociationByClientId(int clientId){
 //		Association association=new Association();
