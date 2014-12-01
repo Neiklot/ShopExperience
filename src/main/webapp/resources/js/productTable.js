@@ -31,7 +31,7 @@ function setupGridProducts() {
 						}, {
 							name: 'image_url',
 						    index: 'image_url',
-						    align: 'left',
+						    formatter: formatImage,
 						    editable: true,
 						    edittype: 'file',
 						    editoptions: {
@@ -155,59 +155,75 @@ function addProduct() {
 		},
 		closeAfterAdd : true,
 		reloadAfterSubmit : false,
-		afterSubmit : UploadImage
+		dataType : "json",
+		afterSubmit : function(response){
+			var data=response.responseText;
+			
+			    if (data!=null) {
+			        if ($("#image_url").val() != "") {
+			            ajaxFileUpload(data);
+			        }
+			    }  
+
+			    return [data.success, data.message, data.id];
+		}
 	});
 }
-	function UploadImage(response, postdata) {
 
-	    var data = $.parseJSON(response.responseText);
+function ajaxFileUpload(id) 
+{
+    $("#loading")
+    .ajaxStart(function () {
+        $(this).show();
+    })
+    .ajaxComplete(function () {
+        $(this).hide();
+    });
 
-	    if (data.success == true) {
-	        if ($("#fileToUpload").val() != "") {
-	            ajaxFileUpload(data.id);
-	        }
-	    }  
+    $.ajaxFileUpload
+    (
+        {
+            url: "/shopExperience/uploadImage",
+            secureuri: false,
+            fileElementId: 'image_url',
+            dataType: 'json',
+            data:{id:id},
+            success: function (data, status) {
 
-	    return [data.success, data.message, data.id];
+                if (typeof (data.success) != 'undefined') {
+                    if (data.success == true) {
+                        return;
+                    } else {
+                        alert(data.message);
+                    }
+                }
+                else {
+                    return alert('Failed to upload logo!');
+                }
+            },
+            error: function (data, status, e) {
+                return alert('Failed to upload logo!');
+            }
+        }
+    )          }  
 
-	}
 
-	function ajaxFileUpload(id) 
-	{
-	    $("#loading")
-	    .ajaxStart(function () {
-	        $(this).show();
-	    })
-	    .ajaxComplete(function () {
-	        $(this).hide();
-	    });
-
-	    $.ajaxFileUpload
-	    (
-	        {
-	            url: '@Url.Action("UploadImage")',
-	            secureuri: false,
-	            fileElementId: 'fileToUpload',
-	            dataType: 'json',
-	            data: { id: id },
-	            success: function (data, status) {
-
-	                if (typeof (data.success) != 'undefined') {
-	                    if (data.success == true) {
-	                        return;
-	                    } else {
-	                        alert(data.message);
-	                    }
-	                }
-	                else {
-	                    return alert('Failed to upload logo!');
-	                }
-	            },
-	            error: function (data, status, e) {
-	                return alert('Failed to upload logo!');
-	            }
-	        }
-	    )          }     
+function formatImage(cellValue, options, rowObject) {
+    var imageHtml = "";
+    if(cellValue){
+        if(cellValue.indexOf("_thumb") == -1){
+//        	http://localhost:8080/shopExperience/resources/css/images/Shop&Experience.png
+        	cellValue="/shopExperience/resources"+cellValue.substr(cellValue.lastIndexOf("/"), cellValue.length);
+            imageHtml = '<div><img src="' + cellValue + '" title="" target="_blank" width="150" height="150" /></div>';    
+        }else{
+            imageHtml = '<div class="gallery"><img src="' + cellValue + '" width="50" height="50" alt="" border="0"/></div>';
+        }
+    }
+    return imageHtml;
+}
+function unformatImage(cellValue, options, cellObject) {
+    return $(cellObject.html()).attr("originalValue");
+}
 
 jQuery.extend({
 	
@@ -261,150 +277,150 @@ jQuery.extend({
 		jQuery(form).appendTo('body');		
 		return form;
     },
-
-    ajaxFileUpload: function(s) {
-        // TODO introduce global settings, allowing the client to modify them for all requests, not only timeout		
-        s = jQuery.extend({}, jQuery.ajaxSettings, s);
-        var id = new Date().getTime()        
-		var form = jQuery.createUploadForm(id, s.fileElementId, (typeof(s.data)=='undefined'?false:s.data));
-		var io = jQuery.createUploadIframe(id, s.secureuri);
-		var frameId = 'jUploadFrame' + id;
-		var formId = 'jUploadForm' + id;		
-        // Watch for a new set of requests
-        if ( s.global && ! jQuery.active++ )
-		{
-			jQuery.event.trigger( "ajaxStart" );
-		}            
-        var requestDone = false;
-        // Create the request object
-        var xml = {}   
-        if ( s.global )
-            jQuery.event.trigger("ajaxSend", [xml, s]);
-        // Wait for a response to come back
-        var uploadCallback = function(isTimeout)
-		{			
-			var io = document.getElementById(frameId);
-            try 
-			{				
-				if(io.contentWindow)
-				{
-					 xml.responseText = io.contentWindow.document.body?io.contentWindow.document.body.innerHTML:null;
-                	 xml.responseXML = io.contentWindow.document.XMLDocument?io.contentWindow.document.XMLDocument:io.contentWindow.document;
-					 
-				}else if(io.contentDocument)
-				{
-					 xml.responseText = io.contentDocument.document.body?io.contentDocument.document.body.innerHTML:null;
-                	xml.responseXML = io.contentDocument.document.XMLDocument?io.contentDocument.document.XMLDocument:io.contentDocument.document;
-				}						
-            }catch(e)
-			{
-				jQuery.handleError(s, xml, null, e);
-			}
-            if ( xml || isTimeout == "timeout") 
-			{				
-                requestDone = true;
-                var status;
-                try {
-                    status = isTimeout != "timeout" ? "success" : "error";
-                    // Make sure that the request was successful or notmodified
-                    if ( status != "error" )
-					{
-                        // process the data (runs the xml through httpData regardless of callback)
-                        var data = jQuery.uploadHttpData( xml, s.dataType );    
-                        // If a local callback was specified, fire it and pass it the data
-                        if ( s.success )
-                            s.success( data, status );
-    
-                        // Fire the global callback
-                        if( s.global )
-                            jQuery.event.trigger( "ajaxSuccess", [xml, s] );
-                    } else
-                        jQuery.handleError(s, xml, status);
-                } catch(e) 
-				{
-                    status = "error";
-                    jQuery.handleError(s, xml, status, e);
-                }
-                alert('BBB');
-                // The request was completed
-                if( s.global )
-                    jQuery.event.trigger( "ajaxComplete", [xml, s] );
-
-                // Handle the global AJAX counter
-                if ( s.global && ! --jQuery.active )
-                    jQuery.event.trigger( "ajaxStop" );
-
-                // Process result
-                if ( s.complete )
-                    s.complete(xml, status);
-
-                jQuery(io).unbind()
-
-                setTimeout(function()
-									{	try 
-										{
-											jQuery(io).remove();
-											jQuery(form).remove();	
-											
-										} catch(e) 
-										{
-											jQuery.handleError(s, xml, null, e);
-										}									
-
-									}, 100)
-
-                xml = null
-
-            }
-        }
-        // Timeout checker
-        if ( s.timeout > 0 ) 
-		{
-            setTimeout(function(){
-                // Check to see if the request is still happening
-                if( !requestDone ) uploadCallback( "timeout" );
-            }, s.timeout);
-        }
+ajaxFileUpload: function(s) {
+    // TODO introduce global settings, allowing the client to modify them for all requests, not only timeout		
+    s = jQuery.extend({}, jQuery.ajaxSettings, s);
+    var id = new Date().getTime()        
+	var form = jQuery.createUploadForm(id, s.fileElementId, (typeof(s.data)=='undefined'?false:s.data));
+	var io = jQuery.createUploadIframe(id, s.secureuri);
+	var frameId = 'jUploadFrame' + id;
+	var formId = 'jUploadForm' + id;		
+    // Watch for a new set of requests
+    if ( s.global && ! jQuery.active++ )
+	{
+		jQuery.event.trigger( "ajaxStart" );
+	}            
+    var requestDone = false;
+    // Create the request object
+    var xml = {}   
+    if ( s.global )
+        jQuery.event.trigger("ajaxSend", [xml, s]);
+    // Wait for a response to come back
+    var uploadCallback = function(isTimeout)
+	{			
+		var io = document.getElementById(frameId);
         try 
-		{
-
-			var form = jQuery('#' + formId);
-			jQuery(form).attr('action', s.url);
-			jQuery(form).attr('method', 'POST');
-			jQuery(form).attr('target', frameId);
-            if(form.encoding)
+		{				
+			if(io.contentWindow)
 			{
-				jQuery(form).attr('encoding', 'multipart/form-data');      			
+				 xml.responseText = io.contentWindow.document.body?io.contentWindow.document.body.innerHTML:null;
+            	 xml.responseXML = io.contentWindow.document.XMLDocument?io.contentWindow.document.XMLDocument:io.contentWindow.document;
+				 
+			}else if(io.contentDocument)
+			{
+				 xml.responseText = io.contentDocument.document.body?io.contentDocument.document.body.innerHTML:null;
+            	xml.responseXML = io.contentDocument.document.XMLDocument?io.contentDocument.document.XMLDocument:io.contentDocument.document;
+			}						
+        }catch(e)
+		{
+			jQuery.handleError(s, xml, null, e);
+		}
+        if ( xml || isTimeout == "timeout") 
+		{				
+            requestDone = true;
+            var status;
+            try {
+                status = isTimeout != "timeout" ? "success" : "error";
+                // Make sure that the request was successful or notmodified
+                if ( status != "error" )
+				{
+                    // process the data (runs the xml through httpData regardless of callback)
+                    var data = jQuery.uploadHttpData( xml, s.dataType );    
+                    // If a local callback was specified, fire it and pass it the data
+                    if ( s.success )
+                        s.success( data, status );
+
+                    // Fire the global callback
+                    if( s.global )
+                        jQuery.event.trigger( "ajaxSuccess", [xml, s] );
+                } else
+                    jQuery.handleError(s, xml, status);
+            } catch(e) 
+			{
+                status = "error";
+                jQuery.handleError(s, xml, status, e);
             }
-            else
-			{	
-				jQuery(form).attr('enctype', 'multipart/form-data');			
-            }			
-            jQuery(form).submit();
 
-        } catch(e) 
-		{			
-            jQuery.handleError(s, xml, null, e);
+            // The request was completed
+            if( s.global )
+                jQuery.event.trigger( "ajaxComplete", [xml, s] );
+
+            // Handle the global AJAX counter
+            if ( s.global && ! --jQuery.active )
+                jQuery.event.trigger( "ajaxStop" );
+
+            // Process result
+            if ( s.complete )
+                s.complete(xml, status);
+
+            jQuery(io).unbind()
+
+            setTimeout(function()
+								{	try 
+									{
+										jQuery(io).remove();
+										jQuery(form).remove();	
+										
+									} catch(e) 
+									{
+										jQuery.handleError(s, xml, null, e);
+									}									
+
+								}, 100)
+
+            xml = null
+
         }
-		
-		jQuery('#' + frameId).load(uploadCallback	);
-        return {abort: function () {}};	
-
-    },
-
-    uploadHttpData: function( r, type ) {
-        var data = !type;
-        data = type == "xml" || data ? r.responseXML : r.responseText;
-        // If the type is "script", eval it in global context
-        if ( type == "script" )
-            jQuery.globalEval( data );
-        // Get the JavaScript object, if JSON is used.
-        if ( type == "json" )
-            eval( "data = " + data );
-        // evaluate scripts within html
-        if ( type == "html" )
-            jQuery("<div>").html(data).evalScripts();
-
-        return data;
     }
+    // Timeout checker
+    if ( s.timeout > 0 ) 
+	{
+        setTimeout(function(){
+            // Check to see if the request is still happening
+            if( !requestDone ) uploadCallback( "timeout" );
+        }, s.timeout);
+    }
+    try 
+	{
+
+		var form = jQuery('#' + formId);
+		jQuery(form).attr('action', s.url);
+		jQuery(form).attr('method', 'POST');
+		jQuery(form).attr('target', frameId);
+        if(form.encoding)
+		{
+			jQuery(form).attr('encoding', 'multipart/form-data');      			
+        }
+        else
+		{	
+			jQuery(form).attr('enctype', 'multipart/form-data');			
+        }			
+        jQuery(form).submit();
+
+    } catch(e) 
+	{			
+        jQuery.handleError(s, xml, null, e);
+    }
+	
+	jQuery('#' + frameId).load(uploadCallback	);
+    return {abort: function () {}};	
+
+},
+
+uploadHttpData: function( r, type ) {
+    var data = !type;
+    data = type == "xml" || data ? r.responseXML : r.responseText;
+    // If the type is "script", eval it in global context
+    if ( type == "script" )
+        jQuery.globalEval( data );
+    // Get the JavaScript object, if JSON is used.
+    if ( type == "json" )
+        eval( "data = " + data );
+    // evaluate scripts within html
+    if ( type == "html" )
+        jQuery("<div>").html(data).evalScripts();
+
+    return data;
+}
 })
+

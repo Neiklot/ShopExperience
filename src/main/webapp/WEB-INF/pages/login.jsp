@@ -14,7 +14,6 @@
 <body onload='document.f.j_username.focus();'>
 	<div class="bodyPage">
 		<div class="bodyPage">
-			<h3>Login with Username and Password (Custom Page)</h3>
 
 			<c:if test="${not empty error}">
 				<div class="errorblock">

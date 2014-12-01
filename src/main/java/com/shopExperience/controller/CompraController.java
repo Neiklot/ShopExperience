@@ -38,10 +38,10 @@ public class CompraController {
 	@RequestMapping(value = "/addCompra", method = RequestMethod.GET)
 	@ResponseBody
 	@Transactional
-	public void addCompra(@RequestParam("client_id") int card_id,
+	public void addCompra(@RequestParam("client_id") int clientId,
 			@RequestParam("importe") String importe) {
 		Compra compra = new Compra();
-		compra.setCard(cca.searchCardById(card_id));
+		compra.setCard(cca.searchCardByClientId(clientId).iterator().next());
 		compra.setImporte(Integer.parseInt(importe));
 		entityManager.persist(compra);
 		entityManager.flush();
